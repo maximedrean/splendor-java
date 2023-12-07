@@ -1,78 +1,136 @@
 package com.splendor;
+
+import java.text.MessageFormat;
+
+/**
+ * The DevCard class represents a development card in Splendor, and implements
+ * the Displayable interface.
+ * Development cards have a level, a cost, prestige points, and a bonus
+ * resource.
+ */
 public class DevCard implements Displayable {
-    
-    public String[] toStringArray(){
-        /** EXAMPLE
-         * ┌────────┐
-         * │①    ♠S│
-         * │        │
-         * │        │
-         * │2 ♠S    │
-         * │2 ♣E    │
-         * │3 ♥R    │
-         * └────────┘
-         */
-        String pointStr = "  ";
-        String[] cardStr = {}; //-- ASUPPRIMER
-        /*
-         * Ce code est à décommenter une fois que la classe DevCard a été implémentée
-        if(getPoints()>0){
-            pointStr = Character.toString(getPoints()+9311);
-        }
-        String[] cardStr = {"\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510",
-                            "\u2502"+pointStr+"    "+resourceType.toSymbol()+"\u2502",
-                            "\u2502        \u2502",
-                            "\u2502        \u2502",
-                            "\u2502        \u2502",
-                            "\u2502        \u2502",
-                            "\u2502        \u2502",
-                            "\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518"};
-        //update cost of the repr
-        int i=6;
-        for(ACOMPLETER){ //-- parcourir l'ensemble des resources (res)en utilisant l'énumération Resource
-            if(getCost().getNbResource(res)>0){
-                cardStr[i] = "\u2502"+getCost().getNbResource(res)+" "+res.toSymbol()+"    \u2502";
-                i--;
-            }
-        } */
-        return cardStr;
+
+    /**
+     * The level of the development card.
+     */
+    private int level;
+
+    /**
+     * The resources required to acquire the development card.
+     */
+    private Resources cost;
+
+    /**
+     * The prestige points associated with the development card.
+     */
+    private int points;
+
+    /**
+     * A bonus resource associated with the development card.
+     */
+    private Resource bonus;
+
+    /**
+     * Constructs a new DevCard with the specified parameters.
+     *
+     * @param level  The level of the development card.
+     * @param cost   The resources required to acquire the development card.
+     * @param points The prestige points associated with the development card.
+     * @param bonus  A bonus resource associated with the development
+     *               card.
+     */
+    public DevCard(int level, Resources cost, int points, Resource bonus) {
+        this.level = level;
+        this.cost = cost;
+        this.points = points;
+        this.bonus = bonus;
     }
 
-    public static String[] noCardStringArray(){
-        /** EXAMPLE
-         * ┌────────┐
-         * │ \    / │
-         * │  \  /  │
-         * │   \/   │
-         * │   /\   │
-         * │  /  \  │
-         * │ /    \ │
-         * └────────┘
-         */
-        String[] cardStr = {"\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510",
-                            "\u2502 \\    / \u2502",
-                            "\u2502  \\  /  \u2502",
-                            "\u2502   \\/   \u2502",
-                            "\u2502   /\\   \u2502",
-                            "\u2502  /  \\  \u2502",
-                            "\u2502 /    \\ \u2502",
-                            "\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518"};
-        
-        return cardStr;
+    /**
+     * Retrieves the level of the development card.
+     *
+     * @return The level of the development card.
+     */
+    public int getLevel() {
+        return level;
     }
 
-    public String toString(){
-        String cardStr = "";
-        /*
-         * Ce code est à décommenter une fois que la classe DevCard a été implémentée
-              
-        cardStr = getPoints()+"pts, type "+resourceType.toSymbol()+" | coût: ";
-        for(ACOMPLETER){ //-- parcourir l'ensemble des resources (res) en utilisant l'énumération Resource
-            if(getCost().getNbResource(res)>0){
-                cardStr += getCost().getNbResource(res)+res.toSymbol()+" ";
-            }
+    /**
+     * Sets the level of the development card.
+     *
+     * @param level The new level to set for the development card.
+     */
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    /**
+     * Retrieves the resources required to acquire the development card.
+     *
+     * @return The resources required to acquire the development card.
+     */
+    public Resources getCost() {
+        return cost;
+    }
+
+    /**
+     * Sets the resources required to acquire the development card.
+     *
+     * @param cost The new resources required for the development card.
+     */
+    public void setCost(Resources cost) {
+        this.cost = cost;
+    }
+
+    /**
+     * Retrieves the prestige points associated with the development card.
+     *
+     * @return The prestige points associated with the development card.
+     */
+    public int getPoints() {
+        return points;
+    }
+
+    /**
+     * Sets the prestige points associated with the development card.
+     *
+     * @param points The new prestige points for the development card.
+     */
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    /**
+     * Retrieves the bonus resource associated with the development card.
+     *
+     * @return The bonus resource associated with the development card.
+     */
+    public Resource getBonus() {
+        return bonus;
+    }
+
+    /**
+     * Sets the bonus resource associated with the development card.
+     *
+     * @param bonus The new bonus resource for the development card.
+     */
+    public void setBonus(Resource bonus) {
+        this.bonus = bonus;
+    }
+
+    /**
+     * Returns a string representation of the development card.
+     *
+     * @return A string representation of the development card.
+     */
+    public String[] toStringArray() {
+        String points = " ";
+        if (this.points > 0) {
+            points = Character.toString(getPoints() + 9311);
         }
-        */
-        return cardStr;
+        String devCardPreview = String.join("\n", Constants.DEV_CARD_PREVIEW);
+        // TODO: Add resources cost
+        devCardPreview = MessageFormat.format(devCardPreview, points, bonus.toSymbol());
+        return devCardPreview.split("\n");
     }
 }
