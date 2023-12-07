@@ -1,43 +1,40 @@
+package com.splendor;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.MessageFormat;
 import java.util.Stack;
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Collections;
 
+
 public class Board implements Displayable {
 
-    /* --- Stringers --- */
-
-    private String[] deckToStringArray(int tier){
-        /** EXAMPLE
-         * ┌────────┐
-         * │        │╲ 
-         * │ reste: │ │
-         * │   16   │ │
-         * │ cartes │ │
-         * │ tier 3 │ │
-         * │        │ │
-         * └────────┘ │
-         *  ╲________╲│
-         */
-        int nbCards = 0; //- AREMPLEACER par le nombre de cartes présentes
-        String[] deckStr = {"\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510  ",
-                            "\u2502        \u2502\u2572 ",
-                            "\u2502 reste: \u2502 \u2502",
-                            "\u2502   "+String.format("%02d", nbCards)+"   \u2502 \u2502",
-                            "\u2502 carte"+(nbCards>1 ? "s" : " ")+" \u2502 \u2502",
-                            "\u2502 tier "+tier+" \u2502 \u2502",
-                            "\u2502        \u2502 \u2502",
-                            "\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518 \u2502",
-                            " \u2572________\u2572\u2502"};
-        return deckStr;
+    /**
+     * Add remaining cards and next tier to the deck representation
+     * and return it.
+     * 
+     * @param tier The tier of the next available card in the deck.
+     * @return The string array representation of the deck.
+     */
+    public String[] deckToStringArray(int tier) {
+        int remainingCards = 0; // TODO
+        String cards = String.format("%02d", remainingCards);
+        String plural = remainingCards > 1 ? "s" : "";
+        // Join and format the deck preview with the corresponding values.
+        String deckPreview = String.join("\n", Constants.DECK_PREVIEW);
+        deckPreview = MessageFormat.format(deckPreview, cards, plural, tier);
+        return deckPreview.split("\n");
     }
 
-    private String[] resourcesToStringArray(){
+    private String[] resourcesToStringArray() {
         /** EXAMPLE
          * Resources disponibles : 4♥R 4♣E 4♠S 4♦D 4●O
          */
@@ -52,7 +49,7 @@ public class Board implements Displayable {
         return resStr;
     }
 
-    private String[] boardToStringArray(){
+    private String[] boardToStringArray() {
         String[] res = Display.emptyStringArray(0, 0);
         /*
          * 

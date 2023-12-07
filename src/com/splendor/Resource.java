@@ -1,3 +1,4 @@
+package com.splendor;
 public enum Resource {
     DIAMOND,
     SAPPHIRE,
