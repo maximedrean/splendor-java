@@ -5,6 +5,8 @@ public final class Constants {
     private Constants() {
     }
 
+    public static final int MAX_NUMBER_RESOURCES_PER_CARD = 4;
+
     public static final String[] DECK_PREVIEW = {
             "┌────────┐",
             "│        │╲",
@@ -21,10 +23,10 @@ public final class Constants {
             "┌────────┐",
             "│{0}     {1}│",
             "│        │",
-            "│{8} {9}     │",
-            "│{6} {7}     │",
-            "│{4} {5}     │",
-            "│{2} {3}     │",
+            "│{8} {9}    │",
+            "│{6} {7}    │",
+            "│{4} {5}    │",
+            "│{2} {3}    │",
             "└────────┘",
     };
 }

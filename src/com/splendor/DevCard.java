@@ -124,13 +124,63 @@ public class DevCard implements Displayable {
      * @return A string representation of the development card.
      */
     public String[] toStringArray() {
+        // Convert the deck preview strings array into a single string in order to
+        // format with values
+        String formattedDevCardPreview = String.join("\n", Constants.DEV_CARD_PREVIEW);
+
+        // Format the string with values
+        String[] resourcesArray = resourcesToString();
+        formattedDevCardPreview = MessageFormat.format(formattedDevCardPreview, pointsToString(), bonusToString(),
+                resourcesArray[0], resourcesArray[1], resourcesArray[2], resourcesArray[3], resourcesArray[4],
+                resourcesArray[5], resourcesArray[6], resourcesArray[7]);
+
+        // Return the string split back into an array of strings
+        return formattedDevCardPreview.split("\n");
+    }
+
+    /**
+     * Converts the prestige points to a string representation.
+     *
+     * @return The string representation of prestige points.
+     */
+    private String pointsToString() {
         String points = " ";
         if (this.points > 0) {
             points = Character.toString(getPoints() + 9311);
         }
-        String devCardPreview = String.join("\n", Constants.DEV_CARD_PREVIEW);
-        // TODO: Add resources cost
-        devCardPreview = MessageFormat.format(devCardPreview, points, bonus.toSymbol());
-        return devCardPreview.split("\n");
+        return points;
+    }
+
+    /**
+     * Retrieves the symbol representation of the bonus resource.
+     *
+     * @return The symbol representation of the bonus resource.
+     */
+    private String bonusToString() {
+        return this.bonus.toSymbol();
+    }
+
+    /**
+     * Converts the resources to a string array representation.
+     *
+     * @return The string array representation of resources.
+     */
+    private String[] resourcesToString() {
+        String[] resources = new String[Constants.MAX_NUMBER_RESOURCES_PER_CARD * 2];
+
+        // Initialize with empty spaces
+        for (int i = 0; i < Constants.MAX_NUMBER_RESOURCES_PER_CARD * 2; i++) {
+            resources[i] = (i % 2 == 0) ? "  " : " ";
+        }
+
+        // Replace empty spaces with resources data
+        Resource[] availableResources = cost.getAvailableResources();
+        for (int i = 0; i < availableResources.length; i++) {
+            int index = i * 2;
+            resources[index] = availableResources[i].toSymbol();
+            resources[index + 1] = Integer.toString(cost.getNbResource(availableResources[i]));
+        }
+
+        return resources;
     }
 }

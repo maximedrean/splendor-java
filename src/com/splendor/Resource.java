@@ -1,40 +1,87 @@
 package com.splendor;
+
+/**
+ * The Resource enum represents different types of resources in Splendor.
+ * Each resource has a corresponding name, a string representation, and a
+ * symbol representation.
+ */
 public enum Resource {
+    /**
+     * Represents the Diamond resource.
+     */
     DIAMOND,
+
+    /**
+     * Represents the Sapphire resource.
+     */
     SAPPHIRE,
+
+    /**
+     * Represents the Emerald resource.
+     */
     EMERALD,
+
+    /**
+     * Represents the Onyx resource.
+     */
     ONYX,
+
+    /**
+     * Represents the Ruby resource.
+     */
     RUBY;
 
-    public String toString(){
-        switch(this){
+    /**
+     * Returns a string representation of the resource, including its name and
+     * the associated figure.
+     *
+     * @return The string representation of the resource.
+     */
+    public String toString() {
+        switch (this) {
             case EMERALD:
-                return "EMERAUDE \u2663"; // EMERAUDE ♣
+                // EMERAUDE ♣
+                return "EMERAUDE \u2663";
             case DIAMOND:
-                return "DIAMANT \u2666"; // DIAMANT ♦
+                // DIAMANT ♦
+                return "DIAMANT \u2666";
             case SAPPHIRE:
-                return "SAPHIR \u2660"; // SAPHIR ♠
+                // SAPHIR ♠
+                return "SAPHIR \u2660";
             case ONYX:
-                return "ONYX \u25CF"; // ONYX ●
+                // ONYX ●
+                return "ONYX \u25CF";
             case RUBY:
-                return "RUBIS \u2665"; // RUBIS ♥
+                // RUBIS ♥
+                return "RUBIS \u2665";
             default:
                 return "";
         }
     }
 
-    public String toSymbol(){
-        switch(this){
+    /**
+     * Returns a symbol representation of the resource, including its shortname
+     * and the associated figure.
+     *
+     * @return The symbol representation of the resource.
+     */
+    public String toSymbol() {
+        switch (this) {
             case EMERALD:
-                return "\u2663E"; // ♣E
+                // ♣E
+                return "\u2663E";
             case DIAMOND:
-                return "\u2666D"; // ♦D
+                // ♦D
+                return "\u2666D";
             case SAPPHIRE:
-                return "\u2660S"; // ♠S
+                // ♠S
+                return "\u2660S";
             case ONYX:
-                return "\u25CFO"; // ●O
+                // ●O
+                return "\u25CFO";
             case RUBY:
-                return "\u2665R"; // ♥R
+                // ♥R
+                return "\u2665R";
             default:
                 return "";
         }
