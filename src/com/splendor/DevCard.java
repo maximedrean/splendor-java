@@ -183,4 +183,19 @@ public class DevCard implements Displayable {
 
         return resources;
     }
+
+    /**
+     * Returns a string representation of the development card.
+     *
+     * @return A string representation of the development card.
+     */
+    public String toString() {
+        String cardString = getPoints() + "pts, type " + bonus.toSymbol() + " | coût :";
+        for (Resource resource : cost.getAvailableResources()) {
+            if (cost.getNbResource(resource) > 0) {
+                cardString += " " + cost.getNbResource(resource) + " " + resource.toSymbol();
+            }
+        }
+        return cardString;
+    }
 }

@@ -19,6 +19,17 @@ public final class Constants {
             " ╲________╲│"
     };
 
+    public static final String[] EMPTY_DECK_PREVIEW = {
+            "┌────────┐",
+            "│ \\    / │",
+            "│  \\  /  │",
+            "│   \\/   │",
+            "│   /\\   │",
+            "│  /  \\  │",
+            "│ /    \\ │",
+            "└────────┘",
+    };
+
     public static final String[] DEV_CARD_PREVIEW = {
             "┌────────┐",
             "│{0}     {1}│",
