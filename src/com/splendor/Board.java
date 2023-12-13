@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.MessageFormat;
 import java.util.Stack;
 import java.util.HashMap;
 import java.util.List;
@@ -67,29 +68,14 @@ public class Board implements Displayable {
         return true;
     }
 
-    private String[] deckToStringArray(int tier){
-        /** EXAMPLE
-         * ┌────────┐
-         * │        │╲ 
-         * │ reste: │ │
-         * │   16   │ │
-         * │ cartes │ │
-         * │ tier 3 │ │
-         * │        │ │
-         * └────────┘ │
-         *  ╲________╲│
-         */
-        int nbCards = stackCards.get(tier).size(); // Remplacé par le nombre de cartes dans le deck pour le niveau donné
-        String[] deckStr = {"\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510  ",
-                            "\u2502        \u2502\u2572 ",
-                            "\u2502 reste: \u2502 \u2502",
-                            "\u2502   "+String.format("%02d", nbCards)+"   \u2502 \u2502",
-                            "\u2502 carte"+(nbCards>1 ? "s" : " ")+" \u2502 \u2502",
-                            "\u2502 tier "+tier+" \u2502 \u2502",
-                            "\u2502        \u2502 \u2502",
-                            "\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518 \u2502",
-                            " \u2572________\u2572\u2502"};
-        return deckStr;
+    public String[] deckToStringArray(int tier){
+        int remainingCards = stackCards.get(tier).size();
+        String cards = String.format("%02d", remainingCards);
+        String plural = remainingCards > 1 ? "s" : "";
+        // Join and format the deck preview with the corresponding values.
+        String deckPreview = String.join("\n", Constants.DECK_PREVIEW);
+        deckPreview = MessageFormat.format(deckPreview, cards, plural, tier);
+        return deckPreview.split("\n");
     }
 
     private String[] resourcesToStringArray(){
@@ -117,7 +103,7 @@ public class Board implements Displayable {
         for (int i = 0; i < visibleCards.length; i++) { // parcourir les différents niveaux de carte (i)
             String[] tierCardsDisplay = Display.emptyStringArray(8, 0);
             for (int j = 0; j < visibleCards[i].length; j++) { // parcourir les 4 cartes faces visibles pour un niveau donné (j)
-                tierCardsDisplay = Display.concatStringArray(tierCardsDisplay, visibleCards[i][j] != null ? visibleCards[i][j].toStringArray() : DevCard.noCardStringArray(), false);
+                tierCardsDisplay = Display.concatStringArray(tierCardsDisplay, visibleCards[i][j] != null ? visibleCards[i][j].toStringArray() : Constants.EMPTY_DECK_PREVIEW, false);
             }
             cardDisplay = Display.concatStringArray(cardDisplay, Display.emptyStringArray(1, 40), true);
             cardDisplay = Display.concatStringArray(cardDisplay, tierCardsDisplay, true);
