@@ -1,4 +1,5 @@
 package com.splendor;
+
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-class Display {
+public class Display {
     private JFrame frame;
     private JTextArea boardTextAreaBoard, consoleTextArea;
     private JTextField textField;
@@ -24,106 +25,107 @@ class Display {
     public Readable in;
     public JTextAreaPrintStream out;
     public JTextAreaPrintStream outBoard;
-    
-    private static int displayedLength(String str){
+
+    private static int displayedLength(String str) {
         int length = 0;
-        for(int i=0;i<str.length();i++){
+        for (int i = 0; i < str.length(); i++) {
             int cp = str.codePointAt(i);
-            if(cp==9450 || (cp>=9312 && cp<=9331) || cp==9450){
-                length+=2;
-            }else{
-                length+=1;
+            if (cp == 9450 || (cp >= 9312 && cp <= 9331) || cp == 9450) {
+                length += 2;
+            } else {
+                length += 1;
             }
         }
         return length;
     }
-    
-    private static int width(String[] strarr){
+
+    private static int width(String[] strarr) {
         int maxLength = 0;
-        for(String line : strarr){
-            if(displayedLength(line) > maxLength){
+        for (String line : strarr) {
+            if (displayedLength(line) > maxLength) {
                 maxLength = displayedLength(line);
             }
         }
         return maxLength;
     }
-    
-    private static int height(String[] strarr){
+
+    private static int height(String[] strarr) {
         return strarr.length;
     }
-    
+
     /**
-     * Complete every line of the string array with space to have the same length everywhere
+     * Complete every line of the string array with space to have the same length
+     * everywhere
      */
-    private static String[] pad(String[] strarr){
+    private static String[] pad(String[] strarr) {
         return pad(strarr, ' ');
     }
-    
+
     /**
      * Complete every line of the string array to have the same length everywhere
      */
-    private static String[] pad(String[] strarr, char c){
+    private static String[] pad(String[] strarr, char c) {
         return pad(strarr, c, height(strarr), width(strarr));
     }
-    
+
     /**
      * Complete the string array to have the given shape
      */
-    private static String[] pad(String[] strarr, char c, int height, int width){
-        String[] paddedStrarr = new String[height];        
-        for(int i=0;i<height;i++){
-            if(i<strarr.length){
-                paddedStrarr[i] = strarr[i] + (c+"").repeat(width-displayedLength(strarr[i]));
-            }else{
-                paddedStrarr[i] = (c+"").repeat(width);
+    private static String[] pad(String[] strarr, char c, int height, int width) {
+        String[] paddedStrarr = new String[height];
+        for (int i = 0; i < height; i++) {
+            if (i < strarr.length) {
+                paddedStrarr[i] = strarr[i] + (c + "").repeat(width - displayedLength(strarr[i]));
+            } else {
+                paddedStrarr[i] = (c + "").repeat(width);
             }
         }
         return paddedStrarr;
     }
 
-    public static String[] concatStringArray(String[] strarr1, String[] strarr2, boolean vStacked){
+    public static String[] concatStringArray(String[] strarr1, String[] strarr2, boolean vStacked) {
         String[] arr;
-        if(vStacked){
+        if (vStacked) {
             int newWidth = Math.max(width(strarr1), width(strarr2));
             strarr1 = pad(strarr1, ' ', height(strarr1), newWidth);
             strarr2 = pad(strarr2, ' ', height(strarr2), newWidth);
-            
-            arr = new String[strarr1.length+strarr2.length];
-            for(int i=0;i<strarr1.length;i++){
+
+            arr = new String[strarr1.length + strarr2.length];
+            for (int i = 0; i < strarr1.length; i++) {
                 arr[i] = strarr1[i];
             }
-            for(int i=0;i<strarr2.length;i++){
-                arr[strarr1.length+i] = strarr2[i];
+            for (int i = 0; i < strarr2.length; i++) {
+                arr[strarr1.length + i] = strarr2[i];
             }
-        }else{
+        } else {
             int newHeight = Math.max(height(strarr1), height(strarr2));
             strarr1 = pad(strarr1, ' ', newHeight, width(strarr1));
             strarr2 = pad(strarr2, ' ', newHeight, width(strarr2));
-            
+
             arr = strarr1.clone();
-            for(int i=0;i<strarr2.length;i++){
+            for (int i = 0; i < strarr2.length; i++) {
                 arr[i] += strarr2[i];
             }
         }
-        
+
         return arr;
     }
 
-    public static String[] emptyStringArray(int rows, int cols, String str){
+    public static String[] emptyStringArray(int rows, int cols, String str) {
         String[] arr = new String[rows];
         Arrays.fill(arr, str.repeat(cols));
         return arr;
     }
 
-    public static String[] emptyStringArray(int rows, int cols){
+    public static String[] emptyStringArray(int rows, int cols) {
         return emptyStringArray(rows, cols, " ");
     }
 
-    public Display(int rowsBoard, int rowsConsole, int cols){
+    public Display(int rowsBoard, int rowsConsole, int cols) {
         Font font;
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, new File("unifont.otf"));
-            font  = font.deriveFont(Font.PLAIN, 14);
+            font = font.deriveFont(Font.PLAIN, 14);
         } catch (FontFormatException | IOException e) {
             font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
             e.printStackTrace();
@@ -136,7 +138,7 @@ class Display {
         outBoard = new JTextAreaPrintStream(boardTextAreaBoard);
 
         consoleTextArea = new JTextArea(rowsConsole, cols);
-        consoleTextArea.setBackground(new Color(240,240,240));
+        consoleTextArea.setBackground(new Color(240, 240, 240));
         consoleTextArea.setEditable(false);
         consoleTextArea.setLineWrap(true);
         consoleTextArea.setFont(font);
@@ -146,15 +148,16 @@ class Display {
         out = new JTextAreaPrintStream(consoleTextArea);
 
         JScrollPane scrollPane = new JScrollPane(consoleTextArea);
-                
+
         textField = new ReadableJTextField(cols);
-        textField.setBackground(new Color(240,240,240));
+        textField.setBackground(new Color(240, 240, 240));
         textField.setFont(font);
         NavigationFilter cursorPositionFilter = new NavigationFilter() {
             private int START_POSITION = 2;
-            
+
             @Override
-            public int getNextVisualPositionFrom(JTextComponent component, int position, Position.Bias bias, int direction, Position.Bias[] newBias) 
+            public int getNextVisualPositionFrom(JTextComponent component, int position, Position.Bias bias,
+                    int direction, Position.Bias[] newBias)
                     throws BadLocationException {
                 if (position > START_POSITION || direction != SwingConstants.WEST) {
                     return super.getNextVisualPositionFrom(component, position, bias, direction, newBias);
@@ -166,7 +169,7 @@ class Display {
         textField.setNavigationFilter(cursorPositionFilter);
         DocumentFilter cursorActionFilter = new DocumentFilter() {
             private int START_POSITION = 2;
-            
+
             @Override
             public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr)
                     throws BadLocationException {
@@ -206,26 +209,26 @@ class Display {
         frame.setMinimumSize(frame.getSize());
     }
 
-    public void close(){
+    public void close() {
         frame.dispose();
     }
 
-    public int getBoardColumns(){
+    public int getBoardColumns() {
         return boardTextAreaBoard.getColumns();
     }
-    
-    public int getBoardRows(){
+
+    public int getBoardRows() {
         return boardTextAreaBoard.getRows();
     }
 
     public class JTextAreaPrintStream {
         private JTextArea textArea;
-    
+
         public JTextAreaPrintStream(JTextArea textArea) {
             this.textArea = textArea;
         }
 
-        public void clean(){
+        public void clean() {
             textArea.setText("");
         }
 
@@ -271,7 +274,6 @@ class Display {
         public void print(Object obj) {
             print(String.valueOf(obj));
         }
-
 
         public void println() {
             newLine();
@@ -323,26 +325,26 @@ class Display {
         }
 
     }
-    
+
     private class ReadableJTextField extends JTextField implements Readable {
         private BlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
-    
+
         public ReadableJTextField(int columns) {
             super("> ", columns);
-    
+
             this.addActionListener(e -> {
                 synchronized (queue) {
                     String text = this.getText().substring(2) + "\n";
                     this.setText("> ");
-                    for (int i=0 ; i<text.length() ; i++ ) {
+                    for (int i = 0; i < text.length(); i++) {
                         queue.offer(text.codePointAt(i));
-                    }                        
+                    }
                     queue.offer(-1);
                     queue.notify();
                 }
             });
         }
-    
+
         @Override
         public int read(CharBuffer cb) throws IOException {
             try {
@@ -351,8 +353,8 @@ class Display {
                         queue.wait();
                     }
                     int n;
-                    for(n=0;!queue.isEmpty();n++){
-                        cb.put((char)queue.poll().intValue());
+                    for (n = 0; !queue.isEmpty(); n++) {
+                        cb.put((char) queue.poll().intValue());
                     }
                     return n;
                 }
@@ -360,6 +362,6 @@ class Display {
                 throw new IOException("Lecture interrompue");
             }
         }
-       
+
     }
 }

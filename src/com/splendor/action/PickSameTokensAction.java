@@ -1,9 +1,11 @@
 package com.splendor.action;
 
-public class PickSameTokensAction implements IAction {
-    
-    public void process() {
+import com.splendor.player.Player;
 
+public class PickSameTokensAction implements IAction {
+
+    public void process(Player player) {
+        // TODO: implement
     }
 
     public String toString() {

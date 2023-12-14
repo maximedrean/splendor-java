@@ -3,7 +3,6 @@ package com.splendor.player;
 import com.splendor.Resources;
 import com.splendor.action.IAction;
 
-
 public class HumanPlayer extends Player {
 
     public HumanPlayer(String name, int id) {
@@ -11,10 +10,13 @@ public class HumanPlayer extends Player {
     }
 
     public IAction chooseAction() {
-        
+        // TODO: implement
+        return null;
+
     }
 
     public Resources chooseDiscardingTokens() {
-        
+        // TODO: implement
+        return null;
     }
 }

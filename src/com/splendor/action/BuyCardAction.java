@@ -1,9 +1,11 @@
 package com.splendor.action;
 
+import com.splendor.player.Player;
+
 public class BuyCardAction implements IAction {
-    
-    public void process() {
-        
+
+    public void process(Player player) {
+        // TODO: implement
     }
 
     public String toString() {

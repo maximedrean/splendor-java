@@ -119,12 +119,17 @@ public class DevCard implements Displayable {
     }
 
     /**
-     * Returns a string representation of the development card.
+     * Converts information about the development card to a formatted string array.
+     * The resulting array represents a visual preview of the development card,
+     * including points, bonuses, and resource costs.
      *
-     * @return A string representation of the development card.
+     * @return An array of strings representing the formatted preview of the
+     *         development card.
+     *         Each element in the array corresponds to a line in the visual
+     *         preview.
      */
     public String[] toStringArray() {
-        // Convert the deck preview strings array into a single string in order to
+        // Convert the dev card preview strings array into a single string in order to
         // format with values
         String formattedDevCardPreview = String.join("\n", Constants.DEV_CARD_PREVIEW);
 
@@ -139,9 +144,14 @@ public class DevCard implements Displayable {
     }
 
     /**
-     * Converts the prestige points to a string representation.
+     * Converts the points of the development card to a formatted string.
+     * If the points value is greater than 0, it is converted to a string and
+     * represented using special Unicode characters.
      *
-     * @return The string representation of prestige points.
+     * @return A string representing the formatted points of the development card.
+     *         If points are greater than 0, special Unicode characters are used for
+     *         representation.
+     *         If points are 0 or negative, an empty string is returned.
      */
     private String pointsToString() {
         String points = " ";
@@ -152,18 +162,26 @@ public class DevCard implements Displayable {
     }
 
     /**
-     * Retrieves the symbol representation of the bonus resource.
+     * Converts the bonus of the development card to a formatted string.
      *
-     * @return The symbol representation of the bonus resource.
+     * @return A string representing the formatted bonus of the development card.
+     *         The string is obtained by invoking the {@code toSymbol} method on the
+     *         bonus.
      */
     private String bonusToString() {
         return this.bonus.toSymbol();
     }
 
     /**
-     * Converts the resources to a string array representation.
+     * Converts information about the development card's resource costs to a
+     * formatted string array.
+     * The resulting array represents a visual preview of the resource costs,
+     * including symbols and counts.
      *
-     * @return The string array representation of resources.
+     * @return An array of strings representing the formatted preview of the
+     *         resource costs of the development card.
+     *         Each pair of consecutive elements in the array represents a resource
+     *         symbol and its corresponding count.
      */
     private String[] resourcesToString() {
         String[] resources = new String[Constants.MAX_NUMBER_RESOURCES_PER_CARD * 2];
@@ -185,9 +203,12 @@ public class DevCard implements Displayable {
     }
 
     /**
-     * Returns a string representation of the development card.
+     * Converts the development card to a formatted string representation.
+     * The resulting string includes information about points, bonus type, and
+     * resource costs.
      *
-     * @return A string representation of the development card.
+     * @return A string representing the formatted preview of the development card,
+     *         including points, bonus type, and resource costs.
      */
     public String toString() {
         String cardString = getPoints() + "pts, type " + bonus.toSymbol() + " | coût :";
@@ -198,4 +219,5 @@ public class DevCard implements Displayable {
         }
         return cardString;
     }
+
 }

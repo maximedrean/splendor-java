@@ -29,6 +29,7 @@ public class Resources extends HashMap<Resource, Integer> {
 
     /**
      * Sets the quantity of a specific resource in the collection.
+     * If the quantity is negative, it is set to 0.
      *
      * @param resource The resource to set the quantity for.
      * @param nb       The new quantity for the resource (non-negative).
@@ -40,6 +41,7 @@ public class Resources extends HashMap<Resource, Integer> {
     /**
      * Updates the quantity of a specific resource in the collection by adding the
      * given amount.
+     * If the resulting count is negative, it is set to 0.
      *
      * @param resource The resource to update the quantity for.
      * @param nb       The amount to add to the current quantity.

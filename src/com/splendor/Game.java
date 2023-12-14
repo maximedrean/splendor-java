@@ -1,11 +1,8 @@
 package com.splendor;
-import java.awt.Desktop.Action;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -18,21 +15,26 @@ import com.splendor.player.HumanPlayer;
 import com.splendor.player.Player;
 import com.splendor.player.RobotPlayer;
 
+/**
+ * The Game class represents a game of Splendor, and implements the Displayable
+ * interface.
+ * A game of Splendor has a board and a list of players.
+ */
 public class Game {
-    /* L'affichage et la lecture d'entrée avec l'interface de jeu se fera entièrement via l'attribut display de la classe Game.
-     * Celui-ci est rendu visible à toutes les autres classes par souci de simplicité.
-     * L'intéraction avec la classe Display est très similaire à celle que vous auriez avec la classe System :
-     *    - affichage de l'état du jeu (méthodes fournies): Game.display.outBoard.println("Nombre de joueurs: 2");
-     *    - affichage de messages à l'utilisateur: Game.display.out.println("Bienvenue sur Splendor ! Quel est ton nom?");
-     *    - demande d'entrée utilisateur: new Scanner(Game.display.in);
-     */
-    private static final int ROWS_BOARD = 36;
-    private static final int ROWS_CONSOLE = 8;
-    private static final int COLS = 82;
-    public static final Display display = new Display(ROWS_BOARD, ROWS_CONSOLE, COLS);
 
+    /**
+     * The board of the game.
+     */
     private Board board;
+
+    /**
+     * The list of players of the game.
+     */
     private ArrayList<Player> players;
+
+    /**
+     * The list of actions available to the player.
+     */
     private static Map<String, IAction> actions = new Hashtable<String, IAction>();
 
     static {
@@ -42,87 +44,155 @@ public class Game {
         actions.put("D", new PassAction());
     }
 
+    /**
+     * Entry point for the Splendor game application.
+     * Initializes the game, displays a welcome message, and starts the gameplay
+     * loop.
+     * Finally, closes the display after the game is over.
+     *
+     * @param args CLI arguments.
+     */
     public static void main(String[] args) {
-        //-- à modifier pour permettre plusieurs scénarios de jeu
-        display.outBoard.println("Bienvenue sur Splendor !");
-        Game game = new Game(2); 
+        Constants.display.outBoard.println("Bienvenue sur Splendor !");
+        Game game = new Game(2);
         game.play();
-        display.close();
+        Constants.display.close();
     }
 
+    /**
+     * Constructs a new game with the specified number of players.
+     *
+     * @param players The number of players for the game. Must be between 2 and 4
+     *                (inclusive).
+     * @throws IllegalArgumentException If the number of players is not within the
+     *                                  valid range (2 to 4).
+     */
     public Game(int players) throws IllegalArgumentException {
-        if (players < 2 || players > 4) throw new IllegalArgumentException(
-            "The number of players must be between 2, 3 or 4.");
+        if (players < 2 || players > 4) {
+            throw new IllegalArgumentException("The number of players must be between 2 and 4.");
+        }
         this.players = new ArrayList<Player>(Arrays.asList(
-            new HumanPlayer("Human player", 0),
-            new RobotPlayer("Robot player 1", 1),
-            new RobotPlayer("Robot player 2", 2)
-        ));
+                new HumanPlayer("Human player", 0),
+                new RobotPlayer("Robot player 1", 1),
+                new RobotPlayer("Robot player 2", 2)));
         this.board = new Board();
     }
 
+    /**
+     * Retrieves the number of players in the game.
+     *
+     * @return The number of players currently participating in the game.
+     */
     public int getNbPlayers() {
         return this.players.size();
     }
 
+    /**
+     * Displays the current state of the game, including the game board and player
+     * information.
+     *
+     * @param currentPlayer The index of the current player whose turn is being
+     *                      displayed.
+     */
     private void display(int currentPlayer) {
         String[] boardDisplay = board.toStringArray();
         String[] playerDisplay = Display.emptyStringArray(0, 0);
-        for (int i = 0 ; i < this.getNbPlayers(); i++) {
+        for (int i = 0; i < this.getNbPlayers(); i++) {
             String[] playerArray = players.get(i).toStringArray();
-            if (i == currentPlayer) playerArray[0] = "\u27A4 " + playerArray[0];
+            if (i == currentPlayer)
+                playerArray[0] = "\u27A4 " + playerArray[0];
 
             playerDisplay = Display.concatStringArray(
-                playerDisplay, playerArray, true);
-            String[] emptyString = Display.emptyStringArray(1, COLS-54, "┉");
+                    playerDisplay, playerArray, true);
+            String[] emptyString = Display.emptyStringArray(1, Constants.COLS - 54, "┉");
             playerDisplay = Display.concatStringArray(playerDisplay, emptyString, true);
         }
 
         String[] mainDisplay = Display.concatStringArray(boardDisplay, playerDisplay, false);
-        display.outBoard.clean();
-        display.outBoard.print(String.join("\n", mainDisplay));
+        Constants.display.outBoard.clean();
+        Constants.display.outBoard.print(String.join("\n", mainDisplay));
     }
 
+    /**
+     * Initiates and manages the gameplay loop where each player takes turns making
+     * moves until the game is over.
+     * After each player's turn, the game state is displayed, and if a player has
+     * more resources than the maximum allowed,
+     * they must discard tokens.
+     * Once the game is over, the appropriate end-of-game procedures are executed.
+     */
     public void play() {
         do {
             for (int index = 0; index < this.getNbPlayers(); index++) {
                 Player player = this.players.get(index);
                 this.display(index);
                 this.move(player);
-                if (player.getAvailableResources().length > 10)
+                if (player.getAvailableResources().length > Constants.MAX_NUMBER_RESOURCES_PER_PLAYER) {
                     this.discardToken(player);
+                }
             }
-        } while(!this.isGameOver());
+        } while (!this.isGameOver());
         this.gameOver();
     }
 
+    /**
+     * Facilitates and processes a player's move by presenting available actions and
+     * handling the chosen action.
+     *
+     * @param player The player whose move is being processed.
+     */
     private void move(Player player) {
-        display.outBoard.print("Quelle action ?");
-        for (IAction action : actions.values()) display.outBoard.print(action.toString());
-        Scanner scanner = new Scanner(Game.display.in);
+        Constants.display.outBoard.print("Quelle action effectuer ?");
+        for (IAction action : actions.values())
+            Constants.display.outBoard.print(action.toString());
+        Scanner scanner = new Scanner(Constants.display.in);
         String choice;
         do {
             choice = scanner.nextLine().strip();
         } while (!actions.containsKey(choice));
         actions.get(choice).process(player);
+        scanner.close();
     }
 
     private void discardToken(Player player) {
+        // TODO: implement
     }
 
+    /**
+     * Checks if the game has reached its end based on the win condition.
+     * The game is over if any player has accumulated points equal to or exceeding
+     * the win threshold.
+     *
+     * @return {@code true} if the game is over, {@code false} otherwise.
+     */
     public boolean isGameOver() {
-        for (Player player : this.players)
-            if (player.getPoints() >= 15) return true;
+        for (Player player : this.players) {
+            if (player.getPoints() >= Constants.WIN_THRESHOLD) {
+                return true;
+            }
+        }
         return false;
     }
 
+    /**
+     * Executes end-of-game procedures, announcing the winning player(s) based on
+     * the win condition.
+     * The winning player(s) are those with points equal to or exceeding the win
+     * threshold.
+     * If multiple players achieve the win condition, they are all considered
+     * winners.
+     */
     private void gameOver() {
         ArrayList<Player> winningPlayers = new ArrayList<Player>();
-        for (Player player : this.players)
-            if (player.getPoints() >= 15) winningPlayers.add(player);
+        for (Player player : this.players) {
+            if (player.getPoints() >= Constants.WIN_THRESHOLD) {
+                winningPlayers.add(player);
+            }
+        }
 
-        String[] players = winningPlayers.toArray(new String[winningPlayers.size()]);
+        String[] players = winningPlayers.stream().map(Player::toString).toArray(String[]::new);
         String playersPreview = String.join(", ", players);
-        display.outBoard.println(playersPreview + " won the game!");
+        Constants.display.outBoard.println(playersPreview + " won the game!");
     }
+
 }
