@@ -1,5 +1,6 @@
-package com.splendor.action;
+package com.splendor.actions;
 
+import com.splendor.Board;
 import com.splendor.player.Player;
 
 /**
@@ -10,9 +11,10 @@ public interface IAction {
     /**
      * Defines the process to be executed for a specific action on a player.
      *
+     * @param board  The board on which the action is to be executed.
      * @param player The player on whom the action is to be executed.
      */
-    public void process(Player player);
+    public void process(Board board, Player player);
 
     /**
      * Returns a string representation of the object.

@@ -7,14 +7,13 @@ import com.splendor.DevCard;
 import com.splendor.Displayable;
 import com.splendor.Resource;
 import com.splendor.Resources;
-import com.splendor.action.IAction;
+import com.splendor.actions.IAction;
 
 /**
- * The Player class represents a player in Splendor, and implements the
+ * The Player class represents a Splendor player, and implements the
  * Displayable interface.
  * A player has an ID, a name, a list of resources, a list of purchased cards,
- * and
- * prestige points.
+ * and prestige points.
  */
 public abstract class Player implements Displayable {
 
@@ -127,17 +126,13 @@ public abstract class Player implements Displayable {
     }
 
     /**
-     * Updates the quantity of a specific resource owned by the player.
-     * The quantity is modified by adding the specified value.
+     * Updates the quantity of a specific resource in the player's resources.
      *
-     * @param resource The resource for which to update the quantity.
-     * @param quantity The value by which to modify the quantity (positive or
-     *                 negative).
+     * @param resource The resource to update.
+     * @param quantity The quantity by which to update the resource.
      */
     public void updateNbResource(Resource resource, int quantity) {
-        int previousQuantity = this.resources.getNbResource(resource);
-        previousQuantity += quantity;
-        this.resources.setNbResource(resource, previousQuantity);
+        this.resources.updateNbResource(resource, quantity);
     }
 
     /**

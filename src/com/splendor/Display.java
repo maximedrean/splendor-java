@@ -124,7 +124,7 @@ public class Display {
     public Display(int rowsBoard, int rowsConsole, int cols) {
         Font font;
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File("unifont.otf"));
+            font = Font.createFont(Font.TRUETYPE_FONT, new File("resources/unifont.otf"));
             font = font.deriveFont(Font.PLAIN, 14);
         } catch (FontFormatException | IOException e) {
             font = new Font(Font.MONOSPACED, Font.PLAIN, 14);

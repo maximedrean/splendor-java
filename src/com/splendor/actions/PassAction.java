@@ -1,5 +1,7 @@
-package com.splendor.action;
+package com.splendor.actions;
 
+import com.splendor.Board;
+import com.splendor.Constants;
 import com.splendor.player.Player;
 
 /**
@@ -9,14 +11,15 @@ import com.splendor.player.Player;
 public class PassAction implements IAction {
 
     /**
-     * Defines a default empty process for an action on a player.
-     * This method does not perform any specific action and serves as a placeholder.
+     * Executes the process for the action of passing a turn, displaying a message
+     * to the player.
      *
-     * @param player The player on whom the empty action is applied.
+     * @param board  The game board.
+     * @param player The player who chose to pass their turn.
      */
     @Override
-    public void process(Player player) {
-        // Do nothing.
+    public void process(Board board, Player player) {
+        Constants.display.outBoard.println("Vous avez choisi de passer votre tour.");
     }
 
     /**
@@ -29,5 +32,4 @@ public class PassAction implements IAction {
     public String toString() {
         return "D: Passer son tour";
     }
-
 }

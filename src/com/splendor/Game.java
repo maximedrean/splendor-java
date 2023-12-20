@@ -6,11 +6,11 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.splendor.action.IAction;
-import com.splendor.action.BuyCardAction;
-import com.splendor.action.PassAction;
-import com.splendor.action.PickDiffTokensAction;
-import com.splendor.action.PickSameTokensAction;
+import com.splendor.actions.BuyCardAction;
+import com.splendor.actions.IAction;
+import com.splendor.actions.PassAction;
+import com.splendor.actions.PickDiffTokensAction;
+import com.splendor.actions.PickSameTokensAction;
 import com.splendor.player.HumanPlayer;
 import com.splendor.player.Player;
 import com.splendor.player.RobotPlayer;
@@ -50,7 +50,7 @@ public class Game {
      * loop.
      * Finally, closes the display after the game is over.
      *
-     * @param args CLI arguments.
+     * @param args Command line arguments (mandatory but not used here).
      */
     public static void main(String[] args) {
         Constants.display.outBoard.println("Bienvenue sur Splendor !");
@@ -142,7 +142,7 @@ public class Game {
      * @param player The player whose move is being processed.
      */
     private void move(Player player) {
-        Constants.display.outBoard.print("Quelle action effectuer ?");
+        Constants.display.outBoard.print("Quelle action ?");
         for (IAction action : actions.values())
             Constants.display.outBoard.print(action.toString());
         Scanner scanner = new Scanner(Constants.display.in);
@@ -150,12 +150,12 @@ public class Game {
         do {
             choice = scanner.nextLine().strip();
         } while (!actions.containsKey(choice));
-        actions.get(choice).process(player);
+        actions.get(choice).process(board, player);
         scanner.close();
     }
 
     private void discardToken(Player player) {
-        // TODO: implement
+        // TODO
     }
 
     /**

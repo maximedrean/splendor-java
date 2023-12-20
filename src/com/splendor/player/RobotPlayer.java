@@ -1,7 +1,7 @@
 package com.splendor.player;
 
 import com.splendor.Resources;
-import com.splendor.action.IAction;
+import com.splendor.actions.IAction;
 
 public class RobotPlayer extends Player {
 
