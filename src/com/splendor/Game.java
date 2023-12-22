@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.splendor.actions.BuyCardAction;
+import com.splendor.actions.DiscardTokensAction;
 import com.splendor.actions.IAction;
 import com.splendor.actions.PassAction;
 import com.splendor.actions.PickDiffTokensAction;
@@ -128,7 +129,7 @@ public class Game {
                 this.display(index);
                 this.move(player);
                 if (player.getAvailableResources().length > Constants.MAX_NUMBER_RESOURCES_PER_PLAYER) {
-                    this.discardToken(player);
+                    this.discardTokens(player);
                 }
             }
         } while (!this.isGameOver());
@@ -154,8 +155,9 @@ public class Game {
         scanner.close();
     }
 
-    private void discardToken(Player player) {
-        // TODO
+    private void discardTokens(Player player) {
+        DiscardTokensAction action = new DiscardTokensAction();
+        action.process(board, player);
     }
 
     /**
