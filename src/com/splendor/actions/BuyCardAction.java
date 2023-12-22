@@ -6,6 +6,7 @@ import com.splendor.DevCard;
 import com.splendor.exceptions.ActionException;
 import com.splendor.exceptions.InvalidColumnException;
 import com.splendor.exceptions.InvalidInputException;
+import com.splendor.exceptions.InvalidNumberException;
 import com.splendor.exceptions.InvalidTierException;
 import com.splendor.exceptions.NotEnoughResourcesException;
 import com.splendor.exceptions.NullCardException;
@@ -22,10 +23,25 @@ public class BuyCardAction extends InputAction {
      * they want to buy.
      */
     @Override
-    public void displayAction() {
+    public void displayAction(Player player) {
         Constants.display.outBoard.println("Quelle position ?");
         Constants.display.outBoard.println("Entrez le tier et la colonne séparés par un espace.");
         Constants.display.outBoard.println("Exemple : 1 2 (pour la carte tier 1, colonne 2).");
+        displayReservedCards(player);
+    }
+
+    private void displayReservedCards(Player player) {
+        DevCard[] reservedCards = player.getReservedCards();
+        if (player.getReservedCards()[0] != null) {
+            Constants.display.outBoard.println("Vous avez déjà réservé les cartes suivantes :");
+            for (int i = 0; i < reservedCards.length; i++) {
+                if (reservedCards[i] != null) {
+                    Constants.display.outBoard.println((i + 1) + " : " + reservedCards[i].toString());
+                }
+            }
+            Constants.display.outBoard.println(
+                    "Vous avez la possibilité d'en acheter une en entrant R et le numéro de la carte séparés par un espace.");
+        }
     }
 
     /**
@@ -41,8 +57,25 @@ public class BuyCardAction extends InputAction {
     @Override
     public void checkInputValidity(Board board, Player player, String input) throws ActionException {
         String[] inputs = validateInputFormat(input);
-        int tier = extractTier(inputs[0]);
-        int column = extractColumn(inputs[1]);
+        if (inputs[0] == "R") {
+            checkReservedCards(board, player, inputs);
+        } else {
+            checkBoardCards(board, player, inputs);
+        }
+
+    }
+
+    public void checkReservedCards(Board board, Player player, String[] inputs) throws ActionException {
+        int number = parseValue(inputs[1]);
+        validateNumberRange(number);
+        DevCard card = player.getReservedCards()[number - 1];
+        validateCardPresence(card);
+        validatePlayerResources(player, card);
+    }
+
+    public void checkBoardCards(Board board, Player player, String[] inputs) throws ActionException {
+        int tier = parseValue(inputs[0]);
+        int column = parseValue(inputs[1]);
         validateTierRange(tier);
         validateColumnRange(column);
         DevCard card = board.getCard(tier, column);
@@ -60,29 +93,14 @@ public class BuyCardAction extends InputAction {
     private String[] validateInputFormat(String input) throws InvalidInputException {
         String[] inputs = input.split(" ");
         if (inputs.length != 2) {
-            throw new InvalidInputException("Vous devez entrer deux nombres séparés par un espace.");
+            throw new InvalidInputException(
+                    "Vous devez entrer deux nombres séparés par un espace, ou R suivi du nombre de la carte si vous en avez réservé une.");
         }
         return inputs;
     }
 
-    /**
-     * Extracts the tier value from the input.
-     *
-     * @param tierInput The tier value as a string.
-     * @return The tier value as an integer.
-     */
-    private int extractTier(String tierInput) {
-        return Integer.parseInt(tierInput);
-    }
-
-    /**
-     * Extracts the column value from the input.
-     *
-     * @param columnInput The column value as a string.
-     * @return The column value as an integer.
-     */
-    private int extractColumn(String columnInput) {
-        return Integer.parseInt(columnInput);
+    private int parseValue(String input) {
+        return Integer.parseInt(input);
     }
 
     /**
@@ -107,6 +125,13 @@ public class BuyCardAction extends InputAction {
         if (column < 1 || column > Constants.COLUMN_NUMBER) {
             throw new InvalidColumnException(
                     "La colonne doit être comprise entre 1 et " + Constants.COLUMN_NUMBER + ".");
+        }
+    }
+
+    private void validateNumberRange(int column) throws InvalidNumberException {
+        if (column > Constants.MAX_RESERVED_CARDS) {
+            throw new InvalidNumberException(
+                    "Le numéro doit être compris entre 1 et " + Constants.MAX_RESERVED_CARDS + ".");
         }
     }
 
@@ -147,12 +172,20 @@ public class BuyCardAction extends InputAction {
     @Override
     public void processInput(Board board, Player player, String input) {
         String[] inputs = input.split(" ");
-        int tier = extractTier(inputs[0]);
-        int column = extractColumn(inputs[1]);
-        DevCard card = board.getCard(tier, column);
-        player.addPurchasedCard(card);
-        player.updatePoints(card);
-        board.updateCard(card, tier, column);
+        if (inputs[0] == "R") {
+            int number = parseValue(inputs[1]);
+            DevCard card = player.getReservedCards()[number - 1];
+            player.removeReservedCard(number - 1);
+            player.addPurchasedCard(card);
+            player.updatePoints(card);
+        } else {
+            int tier = parseValue(inputs[0]);
+            int column = parseValue(inputs[1]);
+            DevCard card = board.getCard(tier, column);
+            board.updateCard(card, tier, column);
+            player.addPurchasedCard(card);
+            player.updatePoints(card);
+        }
     }
 
     /**

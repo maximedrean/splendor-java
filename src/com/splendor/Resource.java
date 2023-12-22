@@ -29,7 +29,12 @@ public enum Resource {
     /**
      * Represents the Ruby resource.
      */
-    RUBY;
+    RUBY,
+
+    /**
+     * Represents the Joker resource.
+     */
+    JOKER;
 
     /**
      * Returns a string representation of the resource, including its name and
@@ -40,20 +45,17 @@ public enum Resource {
     public String toString() {
         switch (this) {
             case EMERALD:
-                // EMERAUDE ♣
-                return "EMERAUDE \u2663";
+                return "EMERAUDE ♣";
             case DIAMOND:
-                // DIAMANT ♦
-                return "DIAMANT \u2666";
+                return "DIAMANT ♦";
             case SAPPHIRE:
-                // SAPHIR ♠
-                return "SAPHIR \u2660";
+                return "SAPHIR ♠";
             case ONYX:
-                // ONYX ●
-                return "ONYX \u25CF";
+                return "ONYX ●";
             case RUBY:
-                // RUBIS ♥
-                return "RUBIS \u2665";
+                return "RUBIS ♥";
+            case JOKER:
+                return "JOKER 🃟";
             default:
                 return "";
         }
@@ -68,20 +70,17 @@ public enum Resource {
     public String toSymbol() {
         switch (this) {
             case EMERALD:
-                // ♣E
-                return "\u2663E";
+                return "♣E";
             case DIAMOND:
-                // ♦D
-                return "\u2666D";
+                return "♦D";
             case SAPPHIRE:
-                // ♠S
-                return "\u2660S";
+                return "♠S";
             case ONYX:
-                // ●O
-                return "\u25CFO";
+                return "●O";
             case RUBY:
-                // ♥R
-                return "\u2665R";
+                return "♥R";
+            case JOKER:
+                return "🃟J";
             default:
                 return "";
         }

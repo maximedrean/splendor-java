@@ -27,6 +27,11 @@ public final class Constants {
     public final static int COLUMN_NUMBER = 4;
 
     /**
+     * Maximum number of reserved cards per player
+     */
+    public final static int MAX_RESERVED_CARDS = 3;
+
+    /**
      * Maximum number of resources per development card
      */
     public static final int MAX_NUMBER_RESOURCES_PER_CARD = 4;

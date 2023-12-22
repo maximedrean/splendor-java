@@ -3,6 +3,7 @@ package com.splendor.player;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import com.splendor.Constants;
 import com.splendor.DevCard;
 import com.splendor.Displayable;
 import com.splendor.Resource;
@@ -37,6 +38,8 @@ public abstract class Player implements Displayable {
      */
     private final ArrayList<DevCard> purchasedCards;
 
+    private DevCard[] reservedCards;
+
     /**
      * The prestige points of the player.
      */
@@ -54,6 +57,7 @@ public abstract class Player implements Displayable {
         this.id = id;
         this.resources = new Resources();
         this.purchasedCards = new ArrayList<DevCard>();
+        this.reservedCards = new DevCard[Constants.MAX_RESERVED_CARDS];
         this.points = 0;
     }
 
@@ -74,6 +78,10 @@ public abstract class Player implements Displayable {
      * @return The resources chosen to be discarded.
      */
     public abstract Resources chooseDiscardingTokens();
+
+    public int getId() {
+        return id;
+    }
 
     /**
      * Retrieves the name of the player.
@@ -112,17 +120,15 @@ public abstract class Player implements Displayable {
         return this.resources.getAvailableResources();
     }
 
-    /**
-     * Calculates the total quantity of a specific resource obtained from the
-     * player's purchased cards.
-     *
-     * @param resource The resource for which to calculate the total quantity.
-     * @return The total quantity of the specified resource obtained from the
-     *         player's purchased cards.
-     */
     public int getResFromCards(Resource resource) {
-        return this.purchasedCards.stream()
-                .mapToInt(card -> card.getCost().getNbResource(resource)).sum();
+        int sum = 0;
+        for (DevCard card : this.purchasedCards) {
+            Resource bonus = card.getBonus();
+            if (bonus != null && bonus == resource) {
+                sum++;
+            }
+        }
+        return sum;
     }
 
     /**
@@ -154,6 +160,32 @@ public abstract class Player implements Displayable {
         this.purchasedCards.add(card);
     }
 
+    public DevCard[] getReservedCards() {
+        return this.reservedCards;
+    }
+
+    public DevCard[] removeReservedCard(int index) {
+        DevCard[] newReservedCards = new DevCard[Constants.MAX_RESERVED_CARDS];
+        int j = 0;
+        for (int i = 0; i < this.reservedCards.length; i++) {
+            if (i != index) {
+                newReservedCards[j] = this.reservedCards[i];
+                j++;
+            }
+        }
+        this.reservedCards = newReservedCards;
+        return this.reservedCards;
+    }
+
+    public void addReservedCard(DevCard card) {
+        for (int i = 0; i < this.reservedCards.length; i++) {
+            if (this.reservedCards[i] == null) {
+                this.reservedCards[i] = card;
+                break;
+            }
+        }
+    }
+
     /**
      * Checks if the player has sufficient resources to buy a specified development
      * card.
@@ -165,11 +197,21 @@ public abstract class Player implements Displayable {
     public boolean canBuyCard(DevCard card) {
         Resources cardCost = card.getCost();
         for (Entry<Resource, Integer> entry : cardCost.entrySet()) {
-            if (this.getNbResource(entry.getKey()) < entry.getValue()) {
+            Resource resource = entry.getKey();
+            if (this.getNbResource(resource) + getResFromCards(resource) < entry.getValue()) {
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean canReserveCard() {
+        for (DevCard card : this.reservedCards) {
+            if (card == null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

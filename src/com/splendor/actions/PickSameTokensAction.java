@@ -19,7 +19,7 @@ public class PickSameTokensAction extends TokenAction {
      * Displays information about the action, including instructions for user input.
      */
     @Override
-    public void displayAction() {
+    public void displayAction(Player player) {
         Constants.display.outBoard.println("Quelle ressource ?");
         displayResources();
         Constants.display.outBoard.println("Entrez la lettre correspondant à la ressource.");

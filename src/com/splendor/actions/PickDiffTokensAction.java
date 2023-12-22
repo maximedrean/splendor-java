@@ -19,7 +19,7 @@ public class PickDiffTokensAction extends TokenAction {
      * Displays information about the action, including instructions for user input.
      */
     @Override
-    public void displayAction() {
+    public void displayAction(Player player) {
         Constants.display.outBoard.println("Quelles ressources ?");
         displayResources();
         Constants.display.outBoard.println("Entrez les lettres correspondant aux ressources séparées par un espace.");

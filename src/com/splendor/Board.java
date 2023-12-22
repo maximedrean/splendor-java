@@ -80,25 +80,10 @@ public class Board implements Displayable {
         return visibleCards[tier][column];
     }
 
-    /**
-     * Updates the development card at the specified tier and column with the
-     * provided card.
-     * If the stack of cards for the specified tier is not empty, the top card is
-     * removed and placed at the specified position.
-     * If the stack is empty, the specified position is set to null.
-     *
-     * @param card   The development card to be placed at the specified tier and
-     *               column.
-     * @param tier   The tier (row) where the card should be updated.
-     * @param column The column where the card should be updated.
-     * @throws NullPointerException           If the provided card is null.
-     * @throws ArrayIndexOutOfBoundsException If the specified tier or column is out
-     *                                        of bounds.
-     */
     public void updateCard(DevCard card, int tier, int column)
             throws NullPointerException, ArrayIndexOutOfBoundsException {
-        if (card == null && visibleCards[tier][column] != null) {
-            throw new NullPointerException("Cannot update a null card.");
+        if (card == null && !stackCards[tier].isEmpty()) {
+            throw new NullPointerException("There are still cards in the stack.");
         }
 
         if (!stackCards[tier].isEmpty()) {

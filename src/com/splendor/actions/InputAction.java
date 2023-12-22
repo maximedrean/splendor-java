@@ -10,7 +10,7 @@ import com.splendor.player.Player;
 public abstract class InputAction implements IAction {
     @Override
     public void process(Board board, Player player) {
-        displayAction();
+        displayAction(player);
         try {
             String input = readInput();
             checkInputValidity(board, player, input);
@@ -20,7 +20,7 @@ public abstract class InputAction implements IAction {
         }
     }
 
-    public abstract void displayAction();
+    public abstract void displayAction(Player player);
 
     public abstract void checkInputValidity(Board board, Player player, String input) throws ActionException;
 
