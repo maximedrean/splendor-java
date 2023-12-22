@@ -3,6 +3,7 @@ package com.splendor.actions;
 import com.splendor.Board;
 import com.splendor.Constants;
 import com.splendor.DevCard;
+import com.splendor.Resource;
 import com.splendor.exceptions.ActionException;
 import com.splendor.exceptions.InvalidColumnException;
 import com.splendor.exceptions.InvalidInputException;
@@ -128,8 +129,8 @@ public class BuyCardAction extends InputAction {
         }
     }
 
-    private void validateNumberRange(int column) throws InvalidNumberException {
-        if (column > Constants.MAX_RESERVED_CARDS) {
+    private void validateNumberRange(int number) throws InvalidNumberException {
+        if (number > Constants.MAX_RESERVED_CARDS) {
             throw new InvalidNumberException(
                     "Le numéro doit être compris entre 1 et " + Constants.MAX_RESERVED_CARDS + ".");
         }
@@ -172,19 +173,22 @@ public class BuyCardAction extends InputAction {
     @Override
     public void processInput(Board board, Player player, String input) {
         String[] inputs = input.split(" ");
+        DevCard card;
         if (inputs[0] == "R") {
             int number = parseValue(inputs[1]);
-            DevCard card = player.getReservedCards()[number - 1];
+            card = player.getReservedCards()[number - 1];
             player.removeReservedCard(number - 1);
-            player.addPurchasedCard(card);
-            player.updatePoints(card);
         } else {
             int tier = parseValue(inputs[0]);
             int column = parseValue(inputs[1]);
-            DevCard card = board.getCard(tier, column);
+            card = board.getCard(tier, column);
             board.updateCard(card, tier, column);
-            player.addPurchasedCard(card);
-            player.updatePoints(card);
+        }
+
+        player.addPurchasedCard(card);
+        player.updatePoints(card);
+        for (Resource resource : card.getCost().getAvailableResources()) {
+            player.updateNbResource(resource, -card.getCost().getNbResource(resource));
         }
     }
 

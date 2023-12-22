@@ -9,6 +9,7 @@ import java.util.Scanner;
 import com.splendor.actions.BuyCardAction;
 import com.splendor.actions.DiscardTokensAction;
 import com.splendor.actions.IAction;
+import com.splendor.actions.NobleVisitAction;
 import com.splendor.actions.PassAction;
 import com.splendor.actions.PickDiffTokensAction;
 import com.splendor.actions.PickSameTokensAction;
@@ -157,6 +158,11 @@ public class Game {
 
     private void discardTokens(Player player) {
         DiscardTokensAction action = new DiscardTokensAction();
+        action.process(board, player);
+    }
+
+    private void nobleVisit(Player player) {
+        NobleVisitAction action = new NobleVisitAction();
         action.process(board, player);
     }
 

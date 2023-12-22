@@ -26,6 +26,11 @@ public class Board implements Displayable {
      */
     private DevCard[][] visibleCards;
 
+    /*
+     * The nobles available on the board.
+     */
+    private Noble[] nobles;
+
     /**
      * Retrieves the count of a specific resource on the board.
      *
@@ -64,6 +69,14 @@ public class Board implements Displayable {
      */
     public Resource[] getAvailableResources() {
         return resources.getAvailableResources();
+    }
+
+    public Noble[] getNobles() {
+        return nobles;
+    }
+
+    public void removeNoble(int index) {
+        nobles[index] = null;
     }
 
     /**

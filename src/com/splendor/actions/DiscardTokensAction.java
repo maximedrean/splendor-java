@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.splendor.Board;
 import com.splendor.Constants;
-import com.splendor.DevCard;
 import com.splendor.Resource;
 import com.splendor.exceptions.ActionException;
 import com.splendor.exceptions.InvalidInputException;

@@ -11,12 +11,16 @@ public abstract class InputAction implements IAction {
     @Override
     public void process(Board board, Player player) {
         displayAction(player);
-        try {
-            String input = readInput();
-            checkInputValidity(board, player, input);
-            processInput(board, player, input);
-        } catch (Exception e) {
-            Constants.display.outBoard.println("Erreur de saisie : " + e.getMessage());
+        boolean valid = false;
+        while (!valid) {
+            try {
+                String input = readInput();
+                checkInputValidity(board, player, input);
+                processInput(board, player, input);
+                valid = true;
+            } catch (Exception e) {
+                Constants.display.outBoard.println("Erreur de saisie : " + e.getMessage());
+            }
         }
     }
 
