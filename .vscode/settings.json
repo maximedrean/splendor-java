@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "gameplay",
+        "unifont"
+    ],
+    "files.exclude": {
+        "**/*.ctxt": true,
+        "**/*.class": true,
+        "**/*.bluej": true
+    },
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.debug.settings.onBuildFailureProceed": true
+}

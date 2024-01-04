@@ -6,6 +6,7 @@
 
 # BlueJ files
 *.ctxt
+__*.java
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -22,3 +23,25 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Gradle files
+.gradle/
+build/
+gradle/
+gradlew
+gradlew.bat
+
+# IntelliJ IDEA files
+.idea/
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# NetBeans files
+nb-configuration.xml
+
+# Operating System Files
+.DS_Store
+Thumbs.db
