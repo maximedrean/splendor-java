@@ -1,5 +1,6 @@
 package com.splendor.exceptions;
 
+
 /**
  * Exception thrown to indicate that the maximum number of reserved cards 
  * has been reached during a game action.

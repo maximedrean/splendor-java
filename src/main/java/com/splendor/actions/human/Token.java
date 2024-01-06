@@ -19,7 +19,7 @@ public abstract class Token extends HumanAction {
      * A mapping of token identifiers (keys) to corresponding 
      * resource types (values).
      */
-    public static Map<String, Resource> resources = 
+    public static final Map<String, Resource> resources = 
         new LinkedHashMap<String, Resource>();
 
     static {

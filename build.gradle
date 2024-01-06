@@ -30,6 +30,7 @@ sourceSets {
 }
 
 test {
+    useJUnitPlatform()
 }
 
 tasks.withType(JavaCompile) {
@@ -37,10 +38,10 @@ tasks.withType(JavaCompile) {
 }
 
 processResources {
-    duplicatesStrategy = 'INCLUDE'
+    duplicatesStrategy = 'EXCLUDE'
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }

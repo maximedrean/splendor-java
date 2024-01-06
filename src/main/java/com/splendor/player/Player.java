@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map.Entry;
 
-import com.splendor.Resources;
 import com.splendor.actions.IAction;
 import com.splendor.board.Board;
+import com.splendor.board.Resources;
 import com.splendor.cards.DevCard;
 import com.splendor.constants.Resource;
 import com.splendor.constants.Values;
@@ -46,7 +46,7 @@ public abstract class Player implements Displayable {
      * The prestige points of the player.
      */
     private int points;
-
+    
     /**
      * Constructs a new player with the specified name and identifier.
      * Initializes the player's resources, purchased cards, and points.
@@ -64,6 +64,24 @@ public abstract class Player implements Displayable {
     }
 
     /**
+     * Represents an entity or action that can discard tokens.
+     * Implementing classes must define the specific behavior of discarding 
+     * tokens.
+     *
+     * @return An {@code IAction} representing the action to discard tokens.
+     */
+    public abstract IAction discardToken();
+
+    /**
+     * Represents an entity or action that can perform a noble visit.
+     * Implementing classes must define the specific behavior of a 
+     * noble visit.
+     *
+     * @return An {@code IAction} representing the action of a noble visit.
+     */
+    public abstract IAction nobleVisit(Board board);
+
+    /**
      * Abstract method for choosing an action.
      * Concrete implementations in subclasses should define the logic 
      * for selecting and returning an action.
@@ -71,15 +89,6 @@ public abstract class Player implements Displayable {
      * @return The chosen action.
      */
     public abstract IAction chooseAction(Board board);
-
-    /**
-     * Abstract method for choosing resources to discard.
-     * Concrete implementations in subclasses should define the logic 
-     * for selecting and returning the resources to discard.
-     *
-     * @return The resources chosen to be discarded.
-     */
-    public abstract Resources chooseDiscardingTokens();
 
     /**
      * Retrieves the id of the player.
@@ -137,8 +146,9 @@ public abstract class Player implements Displayable {
      *         resource.
      */
     public int getResFromCards(Resource resource) {
-        return (int) this.purchasedCards.stream()
-            .map(DevCard::getBonus).filter(resource::equals).count();
+        return (int) this.purchasedCards.stream().filter(
+            card -> card != null && card.getBonus() != null 
+            && card.getBonus().equals(resource)).count();
     }
 
     /**
@@ -173,6 +183,21 @@ public abstract class Player implements Displayable {
     }
 
     /**
+     * Removes a purchased development card to the player's collection,
+     * according to a specific bonus resource.
+     *
+     * @param bonus The specific resource that determines the type
+     *        of card to remove.
+     */
+    public void removePurchasedCard(Resource bonus) {
+        for (DevCard card : this.purchasedCards) {
+            if (card.getBonus() != bonus) continue;
+            this.purchasedCards.remove(card);
+            return;
+        }
+    }
+
+    /**
      * Retrieves the array of reserved development cards for the player.
      *
      * @return The array of reserved development cards.
@@ -186,24 +211,21 @@ public abstract class Player implements Displayable {
      * updated array of reserved cards.
      *
      * @param selectedIndex The index of the reserved card to be removed.
-     * @return The updated array of reserved cards after removing the
-     *         specified card.
      */
-    public DevCard[] removeReservedCard(int selectedIndex) {
+    public void removeReservedCard(int selectedIndex) {
         // Create a new array to store the updated reserved cards.
         DevCard[] newCards = new DevCard[Values.MAX_RESERVED_CARDS];
-        int reservedIndex = 0;
+        int reservedIndex = 0; // Increment only if index != selectedIndex.
         // Iterate through the existing reserved cards array.
         for (int index = 0; index < this.reservedCards.length; index++) {
             // Skip the card at the specified index to remove it.
-            if (reservedIndex == index) continue;
-            final DevCard card = this.reservedCards[index];
+            if (reservedIndex == selectedIndex) continue;
+            final DevCard card = this.reservedCards[reservedIndex];
             newCards[reservedIndex] = card;
             reservedIndex++;
         }
         // Update the reservedCards field with the new array.
         this.reservedCards = newCards;
-        return this.reservedCards;
     }
 
     /**
@@ -302,5 +324,15 @@ public abstract class Player implements Displayable {
                 resourceToken + ") [" + resourceValue + "]";
         }
         return stringPlayer;
+    }
+
+    /**
+     * Returns the name of the player.
+     *
+     * @return A string representing the name of the player.
+     */
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

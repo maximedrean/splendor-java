@@ -1,11 +1,11 @@
 package com.splendor.player;
 
 import java.util.Arrays;
-import java.util.Random;
 
-import com.splendor.Resources;
 import com.splendor.actions.IAction;
 import com.splendor.actions.robot.BuyCard;
+import com.splendor.actions.robot.DiscardTokens;
+import com.splendor.actions.robot.NobleVisit;
 import com.splendor.actions.robot.PassAction;
 import com.splendor.actions.robot.PickDifferentTokens;
 import com.splendor.actions.robot.PickSameTokens;
@@ -32,28 +32,22 @@ public class RobotPlayer extends Player {
     }
 
     /**
-     * Chooses an action for the robot player based on a set of simple rules.
-     * 
-     * @param board The game board.
-     * @return The action chosen by the robot player.
+     * Creates and returns an action to discard a token.
+     *
+     * @return An {@code IAction} representing the action to discard tokens.
      */
-    @Override
-    public IAction chooseAction(Board board) {
-        // Attempt to buy a card, starting with the highest level available.
-        DevCard[] visibleCards = board.getVisibleCards();
-        int highestLevel = this.getHighestLevel(visibleCards);
-        for (int level = highestLevel; level >= 1; level--)
-            for (DevCard card : this.getCardsAtLevel(visibleCards, level))
-                if (this.canBuyCard(card)) return new BuyCard();
-        // If unable to buy a card or to acquire tokens, pass the turn.
-        Resource[] availableResources = board.getAvailableResources();
-        if (availableResources.length == 0) return new PassAction();
-        // Try to take two tokens of the same type.
-        for (Resource resource : Resource.values())
-            if (board.getNbResource(resource) >= Values.REQUIRED_RESOURCES)
-                return new PickSameTokens();
-        // Otherwise, try to take tokens of different types.
-        return new PickDifferentTokens();
+    public IAction discardToken() {
+        return new DiscardTokens();
+    }
+
+    /**
+     * Creates and returns an action for a noble visit.
+     *
+     * @param board Unused.
+     * @return An {@code IAction} representing the action of a noble visit.
+     */
+    public IAction nobleVisit(Board board) {
+        return new NobleVisit();
     }
 
     /**
@@ -83,22 +77,27 @@ public class RobotPlayer extends Player {
     }
 
     /**
-     * Chooses tokens to discard when the robot player has 
-     * more than `Values.TOKEN_LIMIT` tokens.
+     * Chooses an action for the robot player based on a set of simple rules.
      * 
-     * @return The resources to be discarded.
+     * @param board The game board.
+     * @return The action chosen by the robot player.
      */
     @Override
-    public Resources chooseDiscardingTokens() {
-        final Resources resourcesToDiscard = new Resources();
-        while (this.getTotalTokens() > Values.TOKEN_LIMIT) {
-            final Resource randomResource = Resource.values()[
-                new Random().nextInt(Resource.values().length)];
-            if (this.getNbResource(randomResource) > 0) {
-                resourcesToDiscard.updateNbResource(randomResource, 1);
-                this.updateNbResource(randomResource, -1);
-            }
-        }
-        return resourcesToDiscard;
+    public IAction chooseAction(Board board) {
+        // Attempt to buy a card, starting with the highest level available.
+        DevCard[] visibleCards = board.getVisibleCards();
+        int highestLevel = this.getHighestLevel(visibleCards);
+        for (int level = highestLevel; level >= 1; level--)
+            for (DevCard card : this.getCardsAtLevel(visibleCards, level))
+                if (this.canBuyCard(card)) return new BuyCard();
+        // If unable to buy a card or to acquire tokens, pass the turn.
+        Resource[] availableResources = board.getAvailableResources();
+        if (availableResources.length == 0) return new PassAction();
+        // Try to take two tokens of the same type.
+        for (Resource resource : Resource.values())
+            if (board.getNbResource(resource) >= Values.REQUIRED_RESOURCES)
+                return new PickSameTokens();
+        // Otherwise, try to take tokens of different types.
+        return new PickDifferentTokens();
     }
 }

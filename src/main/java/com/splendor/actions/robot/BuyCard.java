@@ -1,10 +1,14 @@
 package com.splendor.actions.robot;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import com.splendor.Resources;
 import com.splendor.actions.RobotAction;
 import com.splendor.board.Board;
+import com.splendor.board.Resources;
 import com.splendor.cards.DevCard;
 import com.splendor.constants.Resource;
 import com.splendor.constants.Values;
@@ -27,12 +31,18 @@ public class BuyCard extends RobotAction {
     @Override
     public void processInput(Board board, Player player) {
         DevCard card;
-        if (new Random().nextBoolean()) { // Reserved card.
-            final int number = new Random().nextInt(Values.TIER_NUMBER);
+        // Extract the non null reserved cards from the fixed array.
+        final DevCard[] reservedCards = player.getReservedCards();
+        final List<DevCard> nonNullCards = Arrays.stream(reservedCards)
+            .filter(Objects::nonNull).collect(Collectors.toList());
+        final int reservedCardsLength = nonNullCards.size();
+        // Randomly purchase a reserved card or card on the board.
+        if (reservedCardsLength > 0 && new Random().nextBoolean()) {
+            final int number = new Random().nextInt(reservedCardsLength);
             // Get the reserved card at the specified index.
-            card = player.getReservedCards()[number - 1];
+            card = nonNullCards.get(number);
             // Remove the reserved card from the player's reserved cards.
-            player.removeReservedCard(number - 1);
+            player.removeReservedCard(number);
         } else { // Default card.
             final int tier = new Random().nextInt(Values.TIER_NUMBER);
             final int column = new Random().nextInt(Values.TIER_NUMBER);
@@ -45,11 +55,11 @@ public class BuyCard extends RobotAction {
         player.addPurchasedCard(card);
         // Update the player's points based on the processed card
         player.updatePoints(card);
-        Resources resourceCosts = card.getCost();
-        Resource[] resources = resourceCosts.getAvailableResources();
+        final Resources resourceCosts = card.getCost();
+        final Resource[] resources = resourceCosts.getAvailableResources();
         // Iterate through the resources and deduct the quantity.
         for (final Resource resource : resources) {
-            int quantity = resourceCosts.getNbResource(resource);
+            final int quantity = resourceCosts.getNbResource(resource);
             // Update the player's resource quantity.
             player.updateNbResource(resource, -quantity);
         }

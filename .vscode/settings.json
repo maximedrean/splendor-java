@@ -9,5 +9,5 @@
         "**/*.bluej": true
     },
     "java.configuration.updateBuildConfiguration": "interactive",
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": false
 }

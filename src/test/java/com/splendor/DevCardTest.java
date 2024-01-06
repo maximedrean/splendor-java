@@ -1,5 +1,6 @@
 package com.splendor;
 
+import com.splendor.board.Resources;
 import com.splendor.cards.DevCard;
 import com.splendor.constants.Resource;
 

@@ -6,11 +6,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-import com.splendor.Resources;
+import com.splendor.board.Resources;
 import com.splendor.constants.Messages;
 import com.splendor.constants.Project;
 import com.splendor.constants.Resource;
@@ -63,25 +64,25 @@ public class CardReader {
      */
     @SuppressWarnings("unchecked")
     public Stack<DevCard>[] getDevCards() {
-        int size = this.devCards.size() + 1; // from 1 to size.
-        Stack<DevCard>[] stackArray = new Stack[size];
+        Stack<DevCard>[] stackArray = new Stack[this.devCards.size()];
         this.devCards.forEach((key, list) -> {
             Stack<DevCard> stack = new Stack<DevCard>();
             list.stream().filter(DevCard.class::isInstance)
                 .map(DevCard.class::cast).forEach(stack::push);
-            stackArray[key] = stack; // Start from 1, 0 is for Nobles.
+            stackArray[key - 1] = stack;
         });
         return stackArray;
     }
 
     /**
-     * Gets the list of NobleCard objects.
-     *
-     * @return The list of NobleCard objects.
+     * Gets the list of (playersCount + 1) Noble cards.
+     * 
+     * @see https://www.regledujeu.fr/splendor/ (I.b).
+     * @return The list of Noble cards.
      */
-    public Stack<DevCard> getNobleCards() {
+    public Noble[] getNobleCards(int playersCount) {
         return this.nobleCards.stream()
-            .collect(Stack<DevCard>::new, Stack::push, Stack::addAll);
+            .distinct().limit(playersCount).toArray(Noble[]::new);
     }
 
     /**
@@ -113,6 +114,7 @@ public class CardReader {
      */
     private void extractCards() throws CardReaderException {
         final List<String> rawCards = this.readCardsFile();
+        Collections.shuffle(rawCards);  // Randomly shuffle cards.
         rawCards.forEach(card -> {
             final String[] values = card.split(",");
             final int tier = Integer.parseInt(values[TIER_INDEX]);

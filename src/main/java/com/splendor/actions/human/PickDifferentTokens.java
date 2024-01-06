@@ -1,5 +1,7 @@
 package com.splendor.actions.human;
 
+import java.util.Arrays;
+
 import com.splendor.board.Board;
 import com.splendor.constants.Messages;
 import com.splendor.constants.Resource;
@@ -59,12 +61,15 @@ public class PickDifferentTokens extends Token {
     private String[] validateInputFormat(String input)
             throws InvalidInputException {
         final String[] inputs = input.split(" ");
-        if (inputs.length != 3)  // Not enough value to unpack.
+        if (inputs.length != Values.DIFF_TOKEN_LIMIT)
             throw new InvalidInputException(Messages.DIFFERENT_TOKEN_ERROR);
+        // Check that input letters exist in the Token static map.
         boolean valid = Token.resources.containsKey(inputs[0]);
         valid = valid && Token.resources.containsKey(inputs[1]);
         valid = valid && Token.resources.containsKey(inputs[2]);
-        if (valid) return inputs;
+        int uniqueCount = (int) Arrays.stream(inputs).distinct().count();
+        // Moreover, check that there is no duplicate letters.
+        if (valid && uniqueCount == inputs.length) return inputs;
         throw new InvalidInputException(Messages.DIFFERENT_TOKEN_ERROR);
     }
 

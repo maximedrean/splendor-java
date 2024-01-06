@@ -14,8 +14,10 @@ public interface IAction {
      *
      * @param board The board on which the action is to be executed.
      * @param player The player on whom the action is to be executed.
+     * @return {@code true} if everything happened correctly,
+     *         otherwise {@code false}.
      */
-    public void process(Board board, Player player);
+    public boolean process(Board board, Player player);
 
     /**
      * Returns a string representation of the object.

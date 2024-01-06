@@ -2,19 +2,18 @@ package com.splendor.player;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
-import com.splendor.Resources;
 import com.splendor.actions.IAction;
 import com.splendor.actions.human.BuyCard;
 import com.splendor.actions.human.PassAction;
 import com.splendor.actions.human.PickDifferentTokens;
 import com.splendor.actions.human.PickSameTokens;
 import com.splendor.actions.human.ReserveCard;
+import com.splendor.actions.human.DiscardTokens;
+import com.splendor.actions.human.NobleVisit;
 import com.splendor.board.Board;
 import com.splendor.constants.Messages;
-import com.splendor.constants.Resource;
 import com.splendor.constants.Utility;
 import com.splendor.constants.Values;
 
@@ -27,15 +26,15 @@ public class HumanPlayer extends Player {
     /**
      * The list of actions available to the player.
      */
-    private static Map<String, IAction> actions = 
+    private static final Map<String, IAction> actions = 
         new LinkedHashMap<String, IAction>();
 
     static {
-        actions.put("A", new PickSameTokens());
-        actions.put("B", new PickDifferentTokens());
-        actions.put("C", new BuyCard());
-        actions.put("D", new ReserveCard());
-        actions.put("E", new PassAction());
+        HumanPlayer.actions.put("A", new PickSameTokens());
+        HumanPlayer.actions.put("B", new PickDifferentTokens());
+        HumanPlayer.actions.put("C", new BuyCard());
+        HumanPlayer.actions.put("D", new ReserveCard());
+        HumanPlayer.actions.put("E", new PassAction());
     }
 
     /**
@@ -46,6 +45,24 @@ public class HumanPlayer extends Player {
      */
     public HumanPlayer(String name, int id) {
         super(name, id);
+    }
+
+    /**
+     * Creates and returns an action to discard a token.
+     *
+     * @return An {@code IAction} representing the action to discard tokens.
+     */
+    public IAction discardToken() {
+        return new DiscardTokens();
+    }
+
+    /**
+     * Creates and returns an action for a noble visit.
+     *
+     * @return An {@code IAction} representing the action of a noble visit.
+     */
+    public IAction nobleVisit(Board board) {
+        return new NobleVisit(board);
     }
 
     /**
@@ -61,28 +78,10 @@ public class HumanPlayer extends Player {
             Utility.display.out.println(action.toString());
         final Scanner scanner = new Scanner(Utility.display.in);
         String choice;
-        do choice = scanner.nextLine().strip();
+        // Remove all characters that are not letters.
+        do choice = scanner.nextLine().replaceAll(Values.INPUT_REGEX, "");
         while (!actions.containsKey(choice));
         scanner.close();
         return actions.get(choice);
-    }
-
-    /**
-     * Allows the human player to choose resources for discarding.
-     *
-     * @return The resources chosen for discarding.
-     */
-    public Resources chooseDiscardingTokens() {
-        // TODO: scanner.
-        final Resources resourcesToDiscard = new Resources();
-        while (this.getTotalTokens() > Values.TOKEN_LIMIT) {
-            final Resource randomResource = Resource.values()[
-                new Random().nextInt(Resource.values().length)];
-            if (this.getNbResource(randomResource) > 0) {
-                resourcesToDiscard.updateNbResource(randomResource, 1);
-                this.updateNbResource(randomResource, -1);
-            }
-        }
-        return resourcesToDiscard;
     }
 }

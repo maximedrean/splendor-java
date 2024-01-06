@@ -1,10 +1,17 @@
 package com.splendor.constants;
 
+
+/**
+ * Constants class that holds various messages used in the Splendor game.
+ */
 public final class Messages {
 
     public static final String TITLE = "Splendor Game";
+    public static final String WELCOME = "Bienvenue sur Splendor !";
+
     public static final String HUMAN = "Human player";
     public static final String ROBOT = "Robot player {0}";
+    public static final String CARD_RESOURCES = "{0} pts, type {1} | coût :";
 
     public static final String INPUT_ERROR = "Erreur de saisie : {0}";
 
@@ -18,6 +25,8 @@ public final class Messages {
     public static final String RESOURCES_SELECTION = "Quelles ressources ?";
     public static final String POSITION_SELECTION = "Quelle position ?";
     public static final String ACTION_SELECTION = "Quelle action ?";
+    public static final String NOBLE_SELECTION = "Lequel choisissez-vous ?";
+
     public static final String TAKE_YOUR_TURN = 
         "Vous avez choisi de passer votre tour.";
 
@@ -120,4 +129,19 @@ public final class Messages {
     public static final String INVALID_TIER =
         "Tier invalide. Assurez-vous que le niveau spécifié se trouve "
         + "dans les limites de la pile de cartes";
+    
+    public static final String NO_NOBLE = 
+        "Aucun noble ne peut vous rendre visite.";
+
+    public static final String NOBLE_AVAILABLE =
+        "Vous avez reçu la visite d'un noble !";
+
+    public static final String NOBLES_AVAILABLE =
+        "Vous avez reçu la visite de plusieurs nobles !";
+    
+    public static final String NOBLE_INVALID_INPUT = 
+        "Vous devez entrer un nombre correspondant au noble choisi.";
+    
+    public static final String NOBLE_NUMBER_ERROR =
+        "Le numéro doit être compris entre 1 et {0}.";
 }

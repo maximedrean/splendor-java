@@ -10,6 +10,11 @@ import com.splendor.constants.Values;
 import com.splendor.player.Player;
 
 
+/**
+ * Represents a robot action of reserving a development card.
+ * Extends the {@code RobotAction} class. Subclasses are expected to 
+ * provide specific implementations for reserving cards.
+ */
 public class ReserveCard extends RobotAction {
 
     /**

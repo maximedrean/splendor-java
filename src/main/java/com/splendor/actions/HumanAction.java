@@ -6,6 +6,7 @@ import java.util.Scanner;
 import com.splendor.board.Board;
 import com.splendor.constants.Messages;
 import com.splendor.constants.Utility;
+import com.splendor.constants.Values;
 import com.splendor.exceptions.ActionException;
 import com.splendor.player.Player;
 
@@ -23,20 +24,21 @@ public abstract class HumanAction implements IAction {
      *
      * @param board The game board on which the action is performed.
      * @param player The player performing the action.
+     * @return {@code true} if everything happened correctly,
+     *         otherwise {@code false}.
      */
     @Override
-    public void process(Board board, Player player) {
+    public boolean process(Board board, Player player) {
         this.displayAction(player);
-        while (true) {
-            try {
-                final String input = this.readInput();
-                this.checkInputValidity(board, player, input);
-                this.processInput(board, player, input);
-                return;
-            } catch (Exception exception) {
-                Utility.display.out.println(MessageFormat.format(
-                    Messages.INPUT_ERROR, exception.getMessage()));
-            }
+        try {
+            final String input = this.readInput();
+            this.checkInputValidity(board, player, input);
+            this.processInput(board, player, input);
+            return true;
+        } catch (Exception exception) {
+            Utility.display.out.println(MessageFormat.format(
+                Messages.INPUT_ERROR, exception.getMessage()));
+            return false;
         }
     }
 
@@ -75,7 +77,9 @@ public abstract class HumanAction implements IAction {
      */
     private String readInput() {
         final Scanner scanner = new Scanner(Utility.display.in);
-        final String input = scanner.nextLine().strip();
+        String input = scanner.nextLine().strip();
+        // Remove all characters that are not letters.
+        input = input.replaceAll(Values.INPUT_REGEX, "");
         scanner.close();
         return input;
     }

@@ -52,7 +52,7 @@ public class ReserveCard extends HumanAction {
         }
         final int column = Integer.parseInt(inputs[1]);
         this.validateColumn(column);
-        final DevCard card = board.getCard(tier, column);
+        final DevCard card = board.getCard(tier - 1, column - 1);
         this.validateCardPresence(card);
     }
 
@@ -135,8 +135,8 @@ public class ReserveCard extends HumanAction {
         final DevCard newCard = board.drawCard(tier);
         if (inputs.length != 1) {
             final int column = Integer.parseInt(inputs[1]);
-            final DevCard card = board.getCard(tier, column);
-            board.updateCard(newCard, tier, column);
+            final DevCard card = board.getCard(tier - 1, column - 1);
+            board.updateCard(newCard, tier - 1, column - 1);
             player.addReservedCard(card);
         } else player.addReservedCard(newCard);
         player.updateNbResource(Resource.JOKER, 1);

@@ -2,8 +2,9 @@ package com.splendor.cards;
 
 import java.text.MessageFormat;
 
-import com.splendor.Resources;
+import com.splendor.board.Resources;
 import com.splendor.constants.Cards;
+import com.splendor.constants.Messages;
 import com.splendor.constants.Resource;
 import com.splendor.constants.Values;
 import com.splendor.display.Displayable;
@@ -209,16 +210,17 @@ public class DevCard implements Displayable {
      *         card, including points, bonus type, and resource costs.
      */
     public String toString() {
-        // TODO: refactoring
-        final String bonus = this.bonus == null ? "" : this.bonus.toSymbol();
-        String cardString = this.getPoints() + "pts, type " + bonus + " | coût :";
+        // Create a development card preview with points, and bonus.
+        String card = MessageFormat.format(
+            Messages.CARD_RESOURCES, this.getPoints(),
+            this.bonus == null ? "" : this.bonus.toSymbol());
+        // Add each resource cost to the card preview if not null.
         for (Resource resource : this.cost.getAvailableResources()) {
-            if (this.cost.getNbResource(resource) > 0) {
-                final int resourceNumber = this.cost.getNbResource(resource);
-                final String resourceSymbol = resource.toSymbol();
-                cardString += " " + resourceNumber + " " + resourceSymbol;
-            }
+            if (this.cost.getNbResource(resource) <= 0) continue;
+            final int resourceNumber = this.cost.getNbResource(resource);
+            final String resourceSymbol = resource.toSymbol();
+            card += " " + resourceNumber + " " + resourceSymbol;
         }
-        return cardString;
+        return card;
     }
 }

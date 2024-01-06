@@ -1,4 +1,4 @@
-package com.splendor;
+package com.splendor.board;
 
 import java.util.ArrayList;
 import java.util.HashMap;

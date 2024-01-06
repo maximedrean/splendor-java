@@ -30,17 +30,18 @@ public abstract class RobotAction implements IAction {
      *
      * @param board The game board on which the action is performed.
      * @param player The player performing the action.
+     * @return {@code true} if everything happened correctly,
+     *         otherwise {@code false}.
      */
     @Override
-    public void process(Board board, Player player) {
-        while (true) {
-            try {
-                this.processInput(board, player);
-                return;
-            } catch (Exception exception) {
-                Utility.display.out.println(MessageFormat.format(
-                    Messages.INPUT_ERROR, exception.getMessage()));
-            }
+    public boolean process(Board board, Player player) {
+        try {
+            this.processInput(board, player);
+            return true;
+        } catch (Exception exception) {
+            Utility.display.out.println(MessageFormat.format(
+                Messages.INPUT_ERROR, exception.getMessage()));
+            return false;
         }
     }
 }

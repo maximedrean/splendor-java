@@ -19,10 +19,12 @@ public class PassAction implements IAction {
      *
      * @param board The game board.
      * @param player The player who chose to pass their turn.
+     * @return {@code true}.
      */
     @Override
-    public void process(Board board, Player player) {
+    public boolean process(Board board, Player player) {
         Utility.display.out.println(Messages.TAKE_YOUR_TURN);
+        return true;
     }
 
     /**

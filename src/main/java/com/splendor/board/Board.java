@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Stack;
 
-import com.splendor.Resources;
 import com.splendor.cards.CardReader;
 import com.splendor.cards.DevCard;
 import com.splendor.cards.Noble;
@@ -19,9 +18,9 @@ import com.splendor.exceptions.CardReaderException;
 
 
 /**
- * The `Board` class represents the game board in Splendor and implements the
- * `Displayable` interface. It manages resources, development cards, and 
- * provides methods for interacting with the game state.
+ * The `Board` class represents the game board in Splendor and implements 
+ * the `Displayable` interface. It manages resources, development cards, 
+ * and provides methods for interacting with the game state.
  */
 public class Board implements Displayable {
 
@@ -34,7 +33,8 @@ public class Board implements Displayable {
      * The stack of Noble / development cards for each level.
      */
     @SuppressWarnings("unchecked")
-    private Stack<DevCard>[] cards = new Stack[Values.TIER_NUMBER + 1];
+    private Stack<DevCard>[] cards = new Stack[Values.TIER_NUMBER];
+    private Noble[] nobles;
 
     /**
      * The visible development / Noble cards on the board.
@@ -48,12 +48,12 @@ public class Board implements Displayable {
      * @throws CardReaderException If there is an issue reading 
      *         cards from the CardReader.
      */
-    public Board() throws CardReaderException {
+    public Board(int playersCount) throws CardReaderException {
         CardReader cardReader = new CardReader();
         this.cards = cardReader.getDevCards();
-        this.cards[0] = cardReader.getNobleCards();
+        this.nobles = cardReader.getNobleCards(playersCount + 1);
         int length = this.cards.length; // Dimension of the board.
-        this.visibleCards = new DevCard[length][length];
+        this.visibleCards = new DevCard[length][length + 1];
         this.initializeBoard(length);
     }
 
@@ -63,9 +63,9 @@ public class Board implements Displayable {
      * @param length The dimension of the board.
      */
     private void initializeBoard(int length) {
-        for (int row = 0; row < length; row++)
-            for (int column = 0; column < length; column++)
-                this.updateCard(this.getCard(row, column), row, column);
+        for (int tier = 0; tier < length; tier++)
+            for (int column = 0; column < length + 1; column++)
+                this.updateCard(this.getCard(tier, column), tier, column);
     }
 
     /**
@@ -84,8 +84,7 @@ public class Board implements Displayable {
      * @return An array containing the noble cards.
      */
     public Noble[] getNobles() {
-        return Arrays.stream(this.visibleCards[0])
-            .toArray(Noble[]::new);
+        return this.nobles;
     }
 
     /**
@@ -151,6 +150,7 @@ public class Board implements Displayable {
      */
     public DevCard getCard(int tier, int column) 
             throws ArrayIndexOutOfBoundsException {
+        tier = Values.TIER_NUMBER - tier - 1;
         return this.visibleCards[tier][column];
     }
 
@@ -168,6 +168,7 @@ public class Board implements Displayable {
      */
     public void updateCard(DevCard card, int tier, int column)
             throws NullPointerException, ArrayIndexOutOfBoundsException {
+        tier = Values.TIER_NUMBER - tier - 1;
         if (card == null && this.cards[tier].isEmpty())
             throw new NullPointerException(Messages.SLOT_NOT_EMPTY);
         this.visibleCards[tier][column] = this.cards[tier].isEmpty() 
@@ -187,8 +188,8 @@ public class Board implements Displayable {
      *         value is out of bounds.
      */
     public DevCard drawCard(int tier) throws ArrayIndexOutOfBoundsException {
-        if (0 <= tier && tier < this.cards.length) {
-            Stack<DevCard> row = this.cards[tier];
+        if (1 <= tier && tier <= this.cards.length) {
+            Stack<DevCard> row = this.cards[Values.TIER_NUMBER - tier];
             return row.isEmpty() ? null : row.pop();
         }
         throw new ArrayIndexOutOfBoundsException(Messages.INVALID_TIER);
@@ -240,11 +241,10 @@ public class Board implements Displayable {
      *         a line in the visual preview.
      */
     public String[] deckToStringArray(int tier) {
-        final int remainingCards = this.cards[tier].size();
+        final int remainingCards = this.cards[tier - 1].size();
         final String cards = String.format("%02d", remainingCards);
         final String plural = remainingCards > 1 ? "s" : "";
-        String[] deck = tier > 0 ? Cards.DECK_PREVIEW : Cards.NOBLE_PREVIEW;
-        String preview = String.join("\n", deck);
+        String preview = String.join("\n", Cards.DECK_PREVIEW );
         preview = MessageFormat.format(preview, cards, plural, tier);
         return preview.split("\n");
     }
@@ -281,15 +281,24 @@ public class Board implements Displayable {
     private String[] boardToStringArray() {
         String[] resource = Display.emptyStringArray(0, 0);
         String[] deck = Display.emptyStringArray(0, 0);
-        // First of all, add the Noble deck at the left of the board.
-        final String[] noble = this.deckToStringArray(0);
-        deck = Display.concatStringArray(deck, noble, true);
+        // First of all, add the Noble cards at the top of the board.
+        String[] noble = Display.emptyStringArray(0, 0);
+        // Add a padding before noble cards in order to be aligned with cards.
+        final String[] padding = Display.emptyStringArray(8, 2);
+        noble = Display.concatStringArray(padding, noble);
+        Noble[] nobleCards = this.getNobles();
+        for (int index = Values.MAX_PLAYERS; 0 <= index; index--) {
+            boolean exceedLimit = index >= nobleCards.length;
+            final String[] noblePreview = exceedLimit ? 
+                Cards.EMPTY_DECK_PREVIEW : nobleCards[index].toStringArray();
+            noble = Display.concatStringArray(noble, noblePreview);
+        }
         // Then, add the other stacks below, at the left of the board.
-        for (int index = this.cards.length - 1; index > 0; index--) {
-            final String[] stack = this.deckToStringArray(index);
+        for (int tier = this.cards.length; tier > 0; tier--) {
+            final String[] stack = this.deckToStringArray(tier);
             deck = Display.concatStringArray(deck, stack, true);
         }
-        String[] card = Display.emptyStringArray(0, 0);
+        String[] cards = Display.emptyStringArray(0, 0);
         for (int row = 0; row < this.visibleCards.length; row++) {
             String[] tierCards = Display.emptyStringArray(8, 0);
             final int limit = this.visibleCards[row].length;
@@ -301,18 +310,19 @@ public class Board implements Displayable {
                 tierCards = Display.concatStringArray(tierCards, displayed);
             }
             final String[] emptySlot = Display.emptyStringArray(1, 40);
-            card = Display.concatStringArray(card, emptySlot, true);
-            card = Display.concatStringArray(card, tierCards, true);
+            cards = Display.concatStringArray(cards, emptySlot, true);
+            cards = Display.concatStringArray(cards, tierCards, true);
         }
-        // Add a vertical empty space to separate the board from players.
-        String[] empty = Display.emptyStringArray(1, 52);
+        // Add a vertical empty space to separate the board from resources.
+        String[] empty = Display.emptyStringArray(1, 54);
         String[] resourcePreview = this.resourcesToStringArray();
         String[] vertical = Display.emptyStringArray(
-            35, 1, Symbols.VERTICAL_DELIMITER);
+            37, 1, Symbols.VERTICAL_DELIMITER);
         String[] horizontal = Display.emptyStringArray(
-            1, 54, Symbols.DELIMITER);
+            1, 59, Symbols.DELIMITER);
         // Combine all the string arrays and return them for display.
-        resource = Display.concatStringArray(deck, card);
+        resource = Display.concatStringArray(deck, cards);
+        resource = Display.concatStringArray(noble, resource, true);
         resource = Display.concatStringArray(resource, empty, true);
         resource = Display.concatStringArray(resource, resourcePreview, true);
         resource = Display.concatStringArray(resource, vertical, false);

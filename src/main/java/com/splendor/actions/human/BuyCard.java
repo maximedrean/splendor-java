@@ -1,8 +1,8 @@
 package com.splendor.actions.human;
 
-import com.splendor.Resources;
 import com.splendor.actions.HumanAction;
 import com.splendor.board.Board;
+import com.splendor.board.Resources;
 import com.splendor.cards.DevCard;
 import com.splendor.constants.Messages;
 import com.splendor.constants.Resource;
@@ -75,6 +75,16 @@ public class BuyCard extends HumanAction {
         else this.checkBoard(board, player, inputs);
     }
 
+    /**
+     * Checks and validates a player's attempt to perform an action on a 
+     * reserved development card.
+     * 
+     * @param board The game board.
+     * @param player The player attempting the action.
+     * @param inputs An array of input parameters for the action.
+     * @throws ActionException If the action is invalid or cannot be 
+     *         performed.
+     */
     public void checkReserved(Board board, Player player, String[] inputs)
             throws ActionException {
         final int number = Integer.parseInt(inputs[1]);
@@ -84,13 +94,23 @@ public class BuyCard extends HumanAction {
         this.validatePlayerResources(player, card);
     }
 
+    /**
+     * Checks and validates a player's attempt to perform an action on a 
+     * development card on the board.
+     * 
+     * @param board The game board.
+     * @param player The player attempting the action.
+     * @param inputs An array of input parameters for the action.
+     * @throws ActionException If the action is invalid or cannot be 
+     *         performed.
+     */
     public void checkBoard(Board board, Player player, String[] inputs)
             throws ActionException {
         final int tier = Integer.parseInt(inputs[0]);
         final int column = Integer.parseInt(inputs[1]);
         this.validateTier(tier);
         this.validateColumn(column);
-        final DevCard card = board.getCard(tier, column);
+        final DevCard card = board.getCard(tier - 1, column - 1);
         this.validateCardPresence(card);
         this.validatePlayerResources(player, card);
     }
@@ -191,9 +211,9 @@ public class BuyCard extends HumanAction {
             // Remove the reserved card from the player's reserved cards.
             player.removeReservedCard(number - 1);
         } else { // Default card.
-            final int tier = Integer.parseInt(inputs[0]);
-            final int column = Integer.parseInt(inputs[1]);
-            // Get the card at the specified tier and column
+            final int tier = Integer.parseInt(inputs[0]) - 1;
+            final int column = Integer.parseInt(inputs[1]) - 1;
+            // Get the card at the specified tier and column.
             card = board.getCard(tier, column);
             // Update the board by removing the card.
             board.updateCard(card, tier, column);
@@ -202,11 +222,11 @@ public class BuyCard extends HumanAction {
         player.addPurchasedCard(card);
         // Update the player's points based on the processed card
         player.updatePoints(card);
-        Resources resourceCosts = card.getCost();
-        Resource[] resources = resourceCosts.getAvailableResources();
+        final Resources resourceCosts = card.getCost();
+        final Resource[] resources = resourceCosts.getAvailableResources();
         // Iterate through the resources and deduct the quantity.
         for (final Resource resource : resources) {
-            int quantity = resourceCosts.getNbResource(resource);
+            final int quantity = resourceCosts.getNbResource(resource);
             // Update the player's resource quantity.
             player.updateNbResource(resource, -quantity);
         }

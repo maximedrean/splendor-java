@@ -15,18 +15,11 @@ import com.splendor.constants.Resource;
  */
 public abstract class Token extends RobotAction {
 
-    public Resource getRandomResource() {
-        // Get all values from the Resource enumeration.
-        final Resource[] resources = Resource.values();
-        final int index = new Random().nextInt(resources.length);
-        return resources[index];
-    }
-
     /**
      * A mapping of token identifiers (keys) to corresponding 
      * resource types (values).
      */
-    public static Map<String, Resource> resources = 
+    public static final Map<String, Resource> resources = 
         new LinkedHashMap<String, Resource>();
 
     static {
@@ -35,5 +28,17 @@ public abstract class Token extends RobotAction {
         Token.resources.put("C", Resource.SAPPHIRE);
         Token.resources.put("D", Resource.ONYX);
         Token.resources.put("E", Resource.RUBY);
+    }
+
+    /**
+     * Generates and returns a random resource from the Resource enumeration.
+     *
+     * @return A randomly selected resource from the Resource enumeration.
+     */
+    public Resource getRandomResource() {
+        // Get all values from the Resource enumeration.
+        final Resource[] resources = Resource.values();
+        final int index = new Random().nextInt(resources.length);
+        return resources[index];
     }
 }
