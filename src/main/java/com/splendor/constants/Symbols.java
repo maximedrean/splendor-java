@@ -8,47 +8,47 @@ package com.splendor.constants;
 public final class Symbols {
 
     /**
-     * Represents the symbol of Diamond resource: ♣️D.
+     * Represents the symbol of Diamond resource.
      */
     public static final String DIAMOND = "\u2663" + "D";
 
     /**
-     * Represents the symbol of Sapphire resource: ♦️S.
+     * Represents the symbol of Sapphire resource.
      */
     public static final String SAPPHIRE = "\u2666" + "S";
 
     /**
-     * Represents the symbol of Emerald resource: ♠️E.
+     * Represents the symbol of Emerald resource.
      */
     public static final String EMERALD = "\u2660" + "E";
 
     /**
-     * Represents the symbol of Onyx resource: ●O.
+     * Represents the symbol of Onyx resource.
      */
     public static final String ONYX = "\u25CF" + "O";
 
     /**
-     * Represents the symbol of Ruby resource: ♥️R.
+     * Represents the symbol of Ruby resource.
      */
     public static final String RUBY = "\u2665" + "R";
 
     /**
-     * Represents the symbol of Joker resource: ⭑J.
+     * Represents the symbol of Joker resource.
      */
     public static final String JOKER = "\u265B" + "J";
 
     /**
-     * Represents the arrow symbol: ➤.
+     * Represents the arrow symbol.
      */
     public static final String ARROW = "\u27A4";
 
     /**
-     * Represents the general delimiter symbol: ┉.
+     * Represents the general delimiter symbol.
      */
     public static final String DELIMITER = "\u2509";
 
     /**
-     * Represents the vertical delimiter symbol: ┊.
+     * Represents the vertical delimiter symbol.
      */
     public static final String VERTICAL_DELIMITER = " \u250A";
 }
